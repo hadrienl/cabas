@@ -1,10 +1,9 @@
 import Head from 'next/head';
-import Link from 'next/link';
 import Box from 'components/Box';
-import Header from 'components/Header';
 import { Layout } from 'components/Layout';
+import Header from 'components/Header';
 
-export default function Home() {
+export default function Signin() {
   return (
     <>
       <Head>
@@ -13,9 +12,7 @@ export default function Home() {
       </Head>
       <Layout>
         <Header />
-        <Box>
-          <Link href="/signin">Connexion</Link>
-        </Box>
+        <Box>Signin</Box>
         <Box as="footer">Pied</Box>
       </Layout>
     </>
