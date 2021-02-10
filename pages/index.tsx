@@ -1,23 +1,16 @@
-import Head from 'next/head';
 import Link from 'next/link';
+
 import Box from 'components/Box';
-import Header from 'components/Header';
-import { Layout } from 'components/Layout';
+import supabase from 'lib/supabase';
+import Main from 'components/Main';
 
 export default function Home() {
+  const user = supabase.auth.user();
+
   return (
-    <>
-      <Head>
-        <title>Cabas</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Layout>
-        <Header />
-        <Box>
-          <Link href="/signin">Connexion</Link>
-        </Box>
-        <Box as="footer">Pied</Box>
-      </Layout>
-    </>
+    <Main>
+      {!user && <Link href="/signin">Connexion</Link>}
+      {user && <Box>Bonjour {user.email}</Box>}
+    </Main>
   );
 }
