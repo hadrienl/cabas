@@ -1,16 +1,19 @@
+import { FC, useEffect, useState } from 'react';
+import { User } from '@supabase/supabase-js';
+import { useRouter } from 'next/router';
+
 import Box from 'components/Box';
 import Link from 'components/Link';
 import Main from 'components/Main';
 import supabase from 'lib/supabase';
-import { useRouter } from 'next/router';
-import { FC, useCallback } from 'react';
+import { useUser } from 'components/UserProvider';
 
 export const AccountLayout: FC = ({ children }) => {
-  const user = supabase.auth.user();
+  const { user, signout } = useUser();
   const { push } = useRouter();
 
-  const signout = async () => {
-    await supabase.auth.signOut();
+  const signOut = async () => {
+    signout();
     push('/');
   };
 
@@ -22,7 +25,7 @@ export const AccountLayout: FC = ({ children }) => {
       <Box flexDirection="row">
         <Box>
           <Link href="/account/password">Change password</Link>
-          <Box as="button" onClick={signout}>
+          <Box as="button" onClick={signOut}>
             Déconnexion
           </Box>
         </Box>

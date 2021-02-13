@@ -3,6 +3,7 @@ import { Auth } from '@supabase/ui';
 
 import supabase from 'lib/supabase';
 import Main from 'components/Main';
+import { useRouter } from 'next/router';
 
 interface SigninData {
   email: string;
@@ -13,6 +14,7 @@ const SIGNIN = 'sign_in' as const;
 const UPDATE_PASWWORD = 'forgotten_password' as const;
 
 export default function Signin() {
+  const { push } = useRouter();
   const [authView, setAuthView] = useState<
     typeof SIGNIN | typeof UPDATE_PASWWORD
   >(SIGNIN);
@@ -23,6 +25,7 @@ export default function Signin() {
         if (event === 'PASSWORD_RECOVERY') setAuthView(UPDATE_PASWWORD);
         if (event === 'USER_UPDATED')
           setTimeout(() => setAuthView(SIGNIN), 1000);
+        if (event === 'SIGNED_IN') setTimeout(() => push('/'), 1000);
         // Send session to /api/auth route to set the auth cookie.
         // NOTE: this is only needed if you're doing SSR (getServerSideProps)!
         fetch('/api/auth', {

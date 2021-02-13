@@ -1,3 +1,10 @@
+export interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  picture: string;
+}
 export interface Provider {
   id: string;
   name: string;
