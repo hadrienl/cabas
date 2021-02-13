@@ -1,9 +1,13 @@
+import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+
 import Box from 'components/Box';
 import supabase from 'lib/supabase';
-import { useForm } from 'react-hook-form';
 import AccountLayout from '../AccountLayout';
+import { useTranslation } from 'lib/i18n';
 
 export const Password = () => {
+  const { t } = useTranslation();
   const { register, handleSubmit, errors, setError, getValues } = useForm();
   const session = supabase.auth.session();
 
@@ -18,8 +22,18 @@ export const Password = () => {
     }
   };
 
+  const breadcrumbs = useMemo(
+    () => [
+      {
+        label: t('account.password.title'),
+        url: '/account/password',
+      },
+    ],
+    []
+  );
+
   return (
-    <AccountLayout>
+    <AccountLayout breadcrumbs={breadcrumbs}>
       <Box as="form" onSubmit={handleSubmit(onSubmit)}>
         <Box
           as="input"

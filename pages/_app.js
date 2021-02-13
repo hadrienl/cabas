@@ -1,4 +1,5 @@
 import UserProvider from 'components/UserProvider';
+import HeaderProvider from 'components/Header/HeaderProvider';
 import { appWithTranslation } from 'lib/i18n';
 
 import 'primereact/resources/themes/vela-green/theme.css';
@@ -10,7 +11,9 @@ import '../styles/globals.css';
 function MyApp({ Component, pageProps }) {
   return (
     <UserProvider>
-      <Component {...pageProps} />
+      <HeaderProvider>
+        <Component {...pageProps} />
+      </HeaderProvider>
     </UserProvider>
   );
 }

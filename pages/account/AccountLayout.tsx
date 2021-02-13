@@ -1,27 +1,52 @@
-import { FC, useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
+import { FC, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import Box from 'components/Box';
 import Link from 'components/Link';
 import Main from 'components/Main';
-import supabase from 'lib/supabase';
 import { useUser } from 'components/UserProvider';
+import SectionTitle from 'components/SectionTitle';
+import { useHeader, Link as ILink } from 'components/Header/HeaderProvider';
+import { useTranslation } from 'lib/i18n';
+import { User } from 'types/Entities';
 
-export const AccountLayout: FC = ({ children }) => {
+interface AccountLayoutProps {
+  breadcrumbs?: ILink[];
+}
+
+export const AccountLayout: FC<AccountLayoutProps> = ({
+  children,
+  breadcrumbs = [],
+}) => {
+  const { t } = useTranslation();
   const { user, signout } = useUser();
   const { push } = useRouter();
+  const { setBreadcrumbs } = useHeader();
 
   const signOut = async () => {
     signout();
     push('/');
   };
 
+  useEffect(() => {
+    if (!user) return;
+    setBreadcrumbs([
+      {
+        label: t('account.title'),
+        url: '/account',
+      },
+      ...breadcrumbs,
+    ]);
+
+    return () => {
+      setBreadcrumbs([]);
+    };
+  }, []);
+
   if (!user) return null;
 
   return (
     <Main>
-      <Box>Settings {user?.email}</Box>
       <Box flexDirection="row">
         <Box>
           <Link href="/account/password">Change password</Link>

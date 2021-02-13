@@ -1,13 +1,17 @@
+import { useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { Tooltip } from 'primereact/tooltip';
-import Box from './Box';
-import Text from './Text';
-import { useUser } from './UserProvider';
+import { BreadCrumb } from 'primereact/breadcrumb';
+
+import Box from 'components/Box';
+import Text from 'components/Text';
+import { useUser } from 'components/UserProvider';
 import { User } from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
+import { useHeader, Link as ILink } from './HeaderProvider';
 
 const getInitials = (user: User) => {
   const { firstName = '', lastName = '' } = user;
@@ -15,10 +19,32 @@ const getInitials = (user: User) => {
   return `${firstName.substr(0, 1)}${lastName.substr(0, 1)}`;
 };
 
+const getDisplayName = (user: User) => {
+  if (!user) return '';
+  return user.firstName || user.lastName
+    ? `${user.firstName} ${user.lastName}`
+    : user.email;
+};
+
 export const Header = () => {
   const { t } = useTranslation();
   const { push } = useRouter();
   const { user } = useUser();
+  const { breadcrumbs } = useHeader();
+
+  const breadcrumbsWithUser = useMemo(
+    () =>
+      [
+        user && {
+          label: t('header.hello', {
+            displayName: getDisplayName(user),
+          }),
+          url: '/account',
+        },
+        ...(breadcrumbs || []),
+      ].filter(Boolean) as ILink[],
+    [user, breadcrumbs]
+  );
 
   const navigateAccount = () => {
     push('/account');
@@ -35,9 +61,30 @@ export const Header = () => {
       color="var(--text-color)"
       borderBottom="1px solid var(--surface-d)"
     >
-      <Text>
-        <Link href="/">{t('title')}</Link>
-      </Text>
+      <Box flexDirection="row" alignItems="center">
+        <Text marginRight="5">
+          <Link href="/">{t('title')}</Link>
+        </Text>
+        {breadcrumbsWithUser && (
+          <BreadCrumb
+            model={breadcrumbsWithUser.map((item) => ({
+              ...item,
+              command: ({ originalEvent }) => {
+                originalEvent.preventDefault();
+                push(item.url);
+              },
+            }))}
+            home={{
+              icon: 'pi pi-home',
+              url: '/',
+              command: ({ originalEvent }: { originalEvent: Event }) => {
+                originalEvent.preventDefault();
+                push('/');
+              },
+            }}
+          />
+        )}
+      </Box>
       <Box flexDirection="row">
         {user && (
           <>
