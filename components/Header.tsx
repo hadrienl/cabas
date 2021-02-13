@@ -3,11 +3,12 @@ import Link from 'next/link';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { Tooltip } from 'primereact/tooltip';
-
+import { withTranslation } from 'next-i18next';
 import Box from './Box';
 import Text from './Text';
 import { useUser } from './UserProvider';
 import { User } from 'types/Entities';
+import { useTranslation } from 'lib/i18n';
 
 const getInitials = (user: User) => {
   const { firstName = '', lastName = '' } = user;
@@ -16,6 +17,7 @@ const getInitials = (user: User) => {
 };
 
 export const Header = () => {
+  const { t } = useTranslation();
   const { push } = useRouter();
   const { user } = useUser();
 
@@ -35,7 +37,7 @@ export const Header = () => {
       borderBottom="1px solid var(--surface-d)"
     >
       <Text>
-        <Link href="/">Cabas</Link>
+        <Link href="/">{t('title')}</Link>
       </Text>
       <Box flexDirection="row">
         {user && (
@@ -45,18 +47,20 @@ export const Header = () => {
               onClick={navigateAccount}
               cursor="pointer"
               className="user-button"
-              data-pr-tooltip="Votre compte"
+              data-pr-tooltip={t('header.accountLink')}
             >
               <Avatar label={getInitials(user)} icon="pi pi-user" />
             </Box>
           </>
         )}
         {user === null && (
-          <Button
-            icon="pi pi-sign-in"
-            tooltip="Connexion"
-            tooltipOptions={{ position: 'left' }}
-          />
+          <Link href="/signin">
+            <Button
+              icon="pi pi-sign-in"
+              tooltip={t('header.connectionLink')}
+              tooltipOptions={{ position: 'left' }}
+            />
+          </Link>
         )}
       </Box>
     </Box>
