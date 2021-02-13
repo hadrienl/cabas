@@ -49,7 +49,21 @@ export const UserProvider: FC = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === 'SIGNED_IN') {
+          fetchUser();
+        }
+        if (event === 'SIGNED_OUT') {
+          setAuthUser(undefined);
+          setUser(null);
+        }
+      }
+    );
     fetchUser();
+    return () => {
+      authListener && authListener.unsubscribe();
+    };
   }, []);
 
   const signout = useCallback(() => {
