@@ -1,6 +1,6 @@
 import Head from 'next/head';
 import { FC } from 'react';
-import Box from './Box';
+import Footer from './Footer';
 import Header from './Header';
 import { Layout } from './Layout';
 
@@ -11,7 +11,7 @@ export const Main: FC = ({ children }) => {
         <title>Cabas</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout header={<Header />} footer={<Box as="footer">Pied</Box>}>
+      <Layout header={<Header />} footer={<Footer />}>
         {children}
       </Layout>
     </>

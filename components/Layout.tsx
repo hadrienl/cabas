@@ -1,4 +1,4 @@
-import { Children, FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import Box from './Box';
 
 interface LayoutProps {
@@ -15,11 +15,11 @@ export const Layout: FC<LayoutProps> = ({ header, footer, children }) => {
         flex="1"
         minHeight="100vh"
       >
-        <Box>{header}</Box>
-        <Box as="main" flex="1">
+        {header}
+        <Box as="main" flex="1" alignItems="stretch" padding="3">
           {children}
         </Box>
-        <Box>{footer}</Box>
+        <Box alignItems="stretch">{footer}</Box>
       </Box>
     </>
   );

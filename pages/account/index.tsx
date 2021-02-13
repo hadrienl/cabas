@@ -1,14 +1,8 @@
-import Box from 'components/Box';
-import Header from 'components/Header';
-import { Layout } from 'components/Layout';
-import Main from 'components/Main';
-import supabase from 'lib/supabase';
-import Head from 'next/head';
-import Link from 'next/link';
+import { useUser } from 'components/UserProvider';
 import AccountLayout from './AccountLayout';
 
 export const AccountIndex = () => {
-  const user = supabase.auth.user();
+  const { user } = useUser();
 
   if (!user) return null;
 

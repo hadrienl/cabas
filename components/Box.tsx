@@ -21,7 +21,7 @@ const visibility = style({ prop: 'visibility' });
 const boxShadow = style({ prop: 'boxShadow' });
 const wordBreak = style({ prop: 'wordBreak' });
 
-type BaseBoxProps = BorderProps &
+export type BoxProps = BorderProps &
   FlexboxProps &
   LayoutProps &
   SpaceProps &
@@ -84,7 +84,7 @@ export const generateStyles = (
   );
 };
 
-export const Box = styled.div<BaseBoxProps>`
+export const Box = styled.div<BoxProps>`
   ${styles};
 `;
 
