@@ -1,6 +1,5 @@
 import { Children, FC } from 'react';
 import Box from './Box';
-import ResetStyles from 'components/ResetStyles';
 
 export const Layout: FC = ({ children }) => {
   const [header, ...content] = Children.toArray(children);
@@ -8,7 +7,6 @@ export const Layout: FC = ({ children }) => {
 
   return (
     <>
-      <ResetStyles />
       <Box
         justifyContent="center"
         alignItems="stretch"
