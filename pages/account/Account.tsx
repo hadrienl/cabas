@@ -1,3 +1,4 @@
+import Box from 'components/Box';
 import { useHeader } from 'components/Header/HeaderProvider';
 import { useUser } from 'components/UserProvider';
 import { useTranslation } from 'lib/i18n';
@@ -9,7 +10,11 @@ export const AccountIndex = () => {
 
   if (!user) return null;
 
-  return <AccountLayout>Yo</AccountLayout>;
+  return (
+    <AccountLayout>
+      <Box>{t('account.welcome')}</Box>
+    </AccountLayout>
+  );
 };
 
 export default AccountIndex;

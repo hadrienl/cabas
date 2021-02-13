@@ -18,5 +18,5 @@ a {
   padding: 0;
 }
 a.active {
-  font-weight: bold;
+  text-decoration: underline;
 }

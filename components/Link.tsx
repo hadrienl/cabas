@@ -1,42 +1,42 @@
-import NextLink from 'next/link';
+import { FC, MouseEvent, useCallback } from 'react';
 import { useRouter } from 'next/router';
-import { cloneElement, FC, ReactElement } from 'react';
-import Box from './Box';
 
-interface LinkProps {
+import Box, { BoxProps } from './Box';
+
+interface LinkProps extends BoxProps {
   href: string;
-  as?: FC | string;
   activeClassName?: string;
-  children: ReactElement | string;
 }
 
 export const Link: FC<LinkProps> = ({
   href,
-  as: As = 'a',
   activeClassName = 'active',
   children,
+  ...props
 }) => {
-  const router = useRouter();
+  const { push, pathname } = useRouter();
 
-  const isActive = router.pathname === href;
+  const isActive = pathname === href;
 
-  const lastChildren =
-    typeof children === 'string' ? (
-      <Box as={As as any} href={href}>
-        {children}
-      </Box>
-    ) : (
-      (children as ReactElement)
-    );
+  const navigate = useCallback(
+    (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      push(href);
+    },
+    [push]
+  );
 
   return (
-    <NextLink href={href}>
-      {cloneElement(lastChildren, {
-        className: `${lastChildren.props.className || ''} ${
-          isActive ? activeClassName : ''
-        }`,
-      })}
-    </NextLink>
+    // @ts-ignore because styled component :(
+    <Box
+      as="a"
+      href={href}
+      onClick={navigate}
+      className={isActive ? activeClassName : ''}
+      {...props}
+    >
+      {children}
+    </Box>
   );
 };
 

@@ -60,6 +60,7 @@ export const Header = () => {
       backgroundColor="var(--surface-a)"
       color="var(--text-color)"
       borderBottom="1px solid var(--surface-d)"
+      boxShadow="0 0 4px rgb(0 0 0 / 25%)"
     >
       <Box flexDirection="row" alignItems="center">
         <Text marginRight="5">

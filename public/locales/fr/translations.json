@@ -7,8 +7,10 @@
   },
   "account": {
     "title": "Votre compte",
+    "welcome": "Bienvenue",
     "password": {
       "title": "Changer votre mot de passe"
-    }
+    },
+    "signout": "Déconnexion"
   }
 }
