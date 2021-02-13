@@ -1,3 +1,12 @@
-import { locale } from 'primereact/api';
+import NextI18Next from 'next-i18next';
 
-locale('fr');
+const NextI18NextInstance = new NextI18Next({
+  defaultLanguage: 'fr',
+  defaultNS: 'translations',
+  localePath: 'public/locales',
+  otherLanguages: ['fr'],
+});
+
+export const { appWithTranslation, useTranslation } = NextI18NextInstance;
+
+export default NextI18NextInstance;
