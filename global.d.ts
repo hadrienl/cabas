@@ -1,1 +1,1 @@
-declare module 'next-i18next/dist/es/middlewares
+declare module 'next-i18next/dist/es/middlewares';
