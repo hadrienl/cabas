@@ -28,17 +28,21 @@ export const Marketplace: React.FC = () => {
       <Box>Market place</Box>
       {error && <Box>{error}</Box>}
       <table>
-        <tr>
-          <th>Nom</th>
-          <th>Pwet</th>
-        </tr>
-        {products &&
-          products.map(({ name, provider = {} }) => (
-            <tr>
-              <td>{name}</td>
-              <td>{provider.name}</td>
-            </tr>
-          ))}
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Pwet</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products &&
+            products.map(({ name, provider = {} }) => (
+              <tr>
+                <td>{name}</td>
+                <td>{provider.name}</td>
+              </tr>
+            ))}
+        </tbody>
       </table>
     </Box>
   );

@@ -1,10 +1,12 @@
-import { Children, FC } from 'react';
+import { Children, FC, ReactNode } from 'react';
 import Box from './Box';
 
-export const Layout: FC = ({ children }) => {
-  const [header, ...content] = Children.toArray(children);
-  const footer = content.pop();
+interface LayoutProps {
+  header: ReactNode;
+  footer: ReactNode;
+}
 
+export const Layout: FC<LayoutProps> = ({ header, footer, children }) => {
   return (
     <>
       <Box
@@ -15,7 +17,7 @@ export const Layout: FC = ({ children }) => {
       >
         <Box>{header}</Box>
         <Box as="main" flex="1">
-          {content}
+          {children}
         </Box>
         <Box>{footer}</Box>
       </Box>

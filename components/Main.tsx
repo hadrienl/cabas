@@ -11,10 +11,8 @@ export const Main: FC = ({ children }) => {
         <title>Cabas</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Layout>
-        <Header />
+      <Layout header={<Header />} footer={<Box as="footer">Pied</Box>}>
         {children}
-        <Box as="footer">Pied</Box>
       </Layout>
     </>
   );

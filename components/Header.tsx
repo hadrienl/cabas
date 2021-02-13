@@ -1,9 +1,15 @@
 import supabase from 'lib/supabase';
-import Link from 'next/link';
+import Link from 'components/Link';
 import Box from './Box';
+import { useEffect, useState } from 'react';
+import { User } from '@supabase/supabase-js';
 
 export const Header = () => {
-  const user = supabase.auth.user();
+  const [user, setUser] = useState<User | null>();
+  useEffect(() => {
+    const user = supabase.auth.user();
+    setUser(user);
+  }, []);
 
   return (
     <Box
@@ -18,7 +24,7 @@ export const Header = () => {
       </Box>
       {user && (
         <Box>
-          <Link href="/account">{user.email}</Link>
+          <Link href="/account">{user.email || ''}</Link>
         </Box>
       )}
       {!user && (
