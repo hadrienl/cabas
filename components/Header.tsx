@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { Tooltip } from 'primereact/tooltip';
-import { withTranslation } from 'next-i18next';
 import Box from './Box';
 import Text from './Text';
 import { useUser } from './UserProvider';

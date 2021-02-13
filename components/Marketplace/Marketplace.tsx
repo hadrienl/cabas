@@ -36,8 +36,8 @@ export const Marketplace: React.FC = () => {
         </thead>
         <tbody>
           {products &&
-            products.map(({ name, provider = {} }) => (
-              <tr>
+            products.map(({ id, name, provider = {} }) => (
+              <tr key={id}>
                 <td>{name}</td>
                 <td>{provider.name}</td>
               </tr>
