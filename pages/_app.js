@@ -1,6 +1,5 @@
 import UserProvider from 'components/UserProvider';
 import HeaderProvider from 'components/Header/HeaderProvider';
-import { appWithTranslation } from 'lib/i18n';
 
 import 'primereact/resources/themes/vela-green/theme.css';
 import 'primereact/resources/primereact.min.css';
@@ -18,4 +17,4 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
-export default appWithTranslation(MyApp);
+export default MyApp;
