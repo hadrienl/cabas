@@ -1,3 +1,3 @@
-import Account from './Account';
+import Account from 'views/Account';
 
 export default Account;
