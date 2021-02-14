@@ -5,6 +5,30 @@
     "connectionLink": "Connexion",
     "hello": "Bonjour, {{displayName}}"
   },
+  "signin": {
+    "title": "Connexion",
+    "email": {
+      "label": "Email :"
+    },
+    "password": {
+      "label": "Mot de passe :"
+    },
+    "submit": "Connexion",
+    "submit_forgot": "Changer mon mot de passe",
+    "submit_email": "Envoyer un lien de connexion",
+    "alreadySignedin": "Vous êtes déjà connecté",
+    "signout": "Déconnexion",
+    "withEmail": "Connexion par lien d'email",
+    "withPassword": "Connexion par mot de passe",
+    "success": "Un email vous a été envoyé",
+    "readEmail": "Consultez votre boite email afin de trouver un lien de connexion automatique et à usage unique."
+  },
+  "signup": {
+    "title": "Créer un nouveau compte",
+    "submit": "Créer mon compte",
+    "success": "Inscription réussie !",
+    "needValidation": "Un email vous a été envoyé pour valider votre compte. Veuillez le consulter et cliquer sur le lien qu'il contient."
+  },
   "account": {
     "title": "Votre compte",
     "welcome": "Bienvenue",
@@ -20,5 +44,9 @@
   },
   "generic": {
     "save": "Enregistrer"
+  },
+  "validators": {
+    "required": "Veuillez indiquer une valeur",
+    "email": "Veuillez indiquer un email valide"
   }
 }

@@ -14,9 +14,9 @@ import { useTranslation } from 'lib/i18n';
 import { useHeader, Link as ILink } from './HeaderProvider';
 
 const getInitials = (user: User) => {
-  const { firstName = '', lastName = '' } = user;
+  const { firstName, lastName } = user;
 
-  return `${firstName.substr(0, 1)}${lastName.substr(0, 1)}`;
+  return `${(firstName || '').substr(0, 1)}${(lastName || '').substr(0, 1)}`;
 };
 
 const getDisplayName = (user: User) => {

@@ -2,10 +2,10 @@ import { useMemo, useState } from 'react';
 import { Form, useForm } from 'react-final-form';
 
 import Box from 'components/Box';
-import Text from 'components/Text';
 import supabase from 'lib/supabase';
 import AccountLayout from './Layout';
 import { useTranslation } from 'lib/i18n';
+import Title from 'components/forms/Title';
 import Input from 'components/forms/Input';
 import Field from 'components/forms/Field';
 import { Button } from 'primereact/button';
@@ -55,7 +55,7 @@ export const Password = () => {
       >
         {({ handleSubmit, valid, submitting }) => (
           <Box as="form" onSubmit={handleSubmit}>
-            <Text mb={3}>{t('account.password.title')}</Text>
+            <Title>{t('account.password.title')}</Title>
             <Field name="password" label={t('account.password.label')}>
               <Input type="password" name="password" />
             </Field>

@@ -20,3 +20,7 @@ a {
 a.active {
   text-decoration: underline;
 }
+
+.p-inputtext {
+  width: 100%;
+}
