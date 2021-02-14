@@ -51,7 +51,6 @@ export const UserProvider: FC = ({ children }) => {
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        console.log(event);
         if (event === 'SIGNED_IN') {
           fetchUser();
         }
