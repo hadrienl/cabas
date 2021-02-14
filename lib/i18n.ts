@@ -4,6 +4,9 @@ const NextI18NextInstance = new NextI18Next({
   defaultLanguage: 'fr',
   defaultNS: 'translations',
   localePath: 'public/locales',
+  localeSubpaths: {
+    fr: '',
+  },
   otherLanguages: ['fr'],
 });
 
