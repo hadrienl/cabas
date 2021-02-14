@@ -1,15 +1,24 @@
-import NextI18Next from 'next-i18next';
+import i18next from 'i18next';
 
-const NextI18NextInstance = new NextI18Next({
-  defaultLanguage: 'fr',
-  defaultNS: 'translations',
-  localePath: 'public/locales',
-  localeSubpaths: {
-    fr: '',
+import fr from '../public/locales/fr/translations.json';
+
+export const DEBUG_ENABLED = !!process.env.NEXT_PUBLIC_DEBUG;
+
+i18next.init({
+  lng: 'fr',
+  supportedLngs: ['fr'],
+  debug: DEBUG_ENABLED,
+  resources: {
+    fr: {
+      translation: fr,
+    },
   },
-  otherLanguages: ['fr'],
 });
 
-export const { appWithTranslation, useTranslation } = NextI18NextInstance;
+const t = (k: string) => k;
 
-export default NextI18NextInstance;
+export const useTranslation = () => {
+  return { t: i18next.t ? i18next.t.bind(i18next) : t, i18next };
+};
+
+export default i18next;
