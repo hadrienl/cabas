@@ -6,6 +6,7 @@ export const DEBUG_ENABLED = !!process.env.NEXT_PUBLIC_DEBUG;
 
 i18next.init({
   lng: 'fr',
+  fallbackLng: 'fr',
   supportedLngs: ['fr'],
   debug: DEBUG_ENABLED,
   resources: {

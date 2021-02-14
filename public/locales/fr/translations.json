@@ -9,8 +9,16 @@
     "title": "Votre compte",
     "welcome": "Bienvenue",
     "password": {
-      "title": "Changer votre mot de passe"
+      "title": "Changer votre mot de passe",
+      "label": "Saisissez un nouveau mot de passe",
+      "label_check": "Vérifiez votre nouveau mot de passe",
+      "error": {
+        "different": "Les deux mots de passe doivent être identiques"
+      }
     },
     "signout": "Déconnexion"
+  },
+  "generic": {
+    "save": "Enregistrer"
   }
 }

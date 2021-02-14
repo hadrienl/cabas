@@ -75,7 +75,9 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
             {t('account.signout')}
           </Text>
         </Box>
-        <Box p={3}>{children}</Box>
+        <Box p={3} flex="1" alignItems="stretch">
+          {children}
+        </Box>
       </Box>
     </Main>
   );
