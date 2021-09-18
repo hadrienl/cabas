@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import { useMemo } from 'react';
 
 import fr from '../public/locales/fr/translations.json';
 
@@ -8,7 +9,7 @@ i18next.init({
   lng: 'fr',
   fallbackLng: 'fr',
   supportedLngs: ['fr'],
-  debug: DEBUG_ENABLED,
+  //debug: DEBUG_ENABLED,
   resources: {
     fr: {
       translation: fr,
@@ -19,7 +20,8 @@ i18next.init({
 const t = (k: string) => k;
 
 export const useTranslation = () => {
-  return { t: i18next.t ? i18next.t.bind(i18next) : t, i18next };
+  const tFn = useMemo(() => (i18next.t ? i18next.t.bind(i18next) : t), []);
+  return { t: tFn, i18next };
 };
 
 export default i18next;

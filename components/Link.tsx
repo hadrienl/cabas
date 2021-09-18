@@ -23,17 +23,16 @@ export const Link: FC<LinkProps> = ({
       e.preventDefault();
       push(href);
     },
-    [push]
+    [href, push]
   );
 
   return (
-    // @ts-ignore because styled component :(
     <Box
       as="a"
       href={href}
       onClick={navigate}
       className={isActive ? activeClassName : ''}
-      {...props}
+      {...(props as any)}
     >
       {children}
     </Box>

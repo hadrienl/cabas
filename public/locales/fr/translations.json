@@ -1,5 +1,5 @@
 {
-  "title": "Cabas",
+  "title": "Le Cabas Liassois",
   "header": {
     "accountLink": "Votre compte",
     "basketLink": "Votre panier",
@@ -52,5 +52,40 @@
   "validators": {
     "required": "Veuillez indiquer une valeur",
     "email": "Veuillez indiquer un email valide"
+  },
+  "home": {
+    "welcome": "Bienvenue au Cabas Liassois, association d'achats groupés."
+  },
+  "distributions": {
+    "current": "Distribution en cours",
+    "next": "Prochaine distribution",
+    "next_plural": "Prochaines distributions",
+    "past": "Distribution passée",
+    "past_plural": "Distributions passées",
+    "startAt": "Démarre le {{date}}",
+    "closeAt": "Ferme le {{date}}",
+    "product": {
+      "producedBy": "produit par {{name}}",
+      "price": "{{price}}",
+      "price_2": "{{price}} le Kg",
+      "price_3": "{{price}} au litre"
+    }
+  },
+  "tag": {
+    "title": "Catégories",
+    "products": {
+      "title": "Produits “{{tag}}”"
+    }
+  },
+  "producer": {
+    "title": "Producteurs",
+    "products": "Ses produits"
+  },
+  "product": {
+    "title": "Produits",
+    "addToBasket": {
+      "totalPrice": "= {{price}}",
+      "label": "Ajouter au panier"
+    }
   }
 }

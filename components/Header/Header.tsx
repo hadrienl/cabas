@@ -44,7 +44,7 @@ export const Header = () => {
         },
         ...(breadcrumbs || []),
       ].filter(Boolean) as ILink[],
-    [user, breadcrumbs]
+    [user, t, breadcrumbs]
   );
 
   const navigateAccount = () => {
@@ -83,7 +83,7 @@ export const Header = () => {
             home={{
               icon: 'pi pi-home',
               url: '/',
-              command: ({ originalEvent }: { originalEvent: Event }) => {
+              command: ({ originalEvent }) => {
                 originalEvent.preventDefault();
                 push('/');
               },
@@ -126,7 +126,7 @@ export const Header = () => {
           </>
         )}
         {user === null && (
-          <Link href="/signin">
+          <Link href="/signin" passHref>
             <Button
               icon="pi pi-sign-in"
               tooltip={t('header.connectionLink')}
