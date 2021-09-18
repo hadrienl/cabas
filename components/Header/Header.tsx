@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { Tooltip } from 'primereact/tooltip';
 import { BreadCrumb } from 'primereact/breadcrumb';
+import { Badge } from 'primereact/badge';
 
 import Box from 'components/Box';
 import Text from 'components/Text';
@@ -50,6 +51,10 @@ export const Header = () => {
     push('/account');
   };
 
+  const navigateBasket = () => {
+    push('/basket');
+  };
+
   return (
     <Box
       flexDirection="row"
@@ -89,6 +94,22 @@ export const Header = () => {
       <Box flexDirection="row">
         {user && (
           <>
+            <Tooltip target=".basket-button" position="left" />
+            <Box
+              onClick={navigateBasket}
+              cursor="pointer"
+              className="basket-button"
+              data-pr-tooltip={t('header.basketLink')}
+              mr={3}
+            >
+              <Avatar
+                className="p-overlay-badge"
+                image="/static/images/icons/basket.svg"
+                size="large"
+              >
+                {/*<Badge value="499" />*/}
+              </Avatar>
+            </Box>
             <Tooltip target=".user-button" position="left" />
             <Box
               onClick={navigateAccount}
@@ -96,7 +117,11 @@ export const Header = () => {
               className="user-button"
               data-pr-tooltip={t('header.accountLink')}
             >
-              <Avatar label={getInitials(user)} icon="pi pi-user" />
+              <Avatar
+                label={getInitials(user)}
+                icon="pi pi-user"
+                size="large"
+              />
             </Box>
           </>
         )}

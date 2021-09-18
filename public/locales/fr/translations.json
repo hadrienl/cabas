@@ -2,6 +2,7 @@
   "title": "Cabas",
   "header": {
     "accountLink": "Votre compte",
+    "basketLink": "Votre panier",
     "connectionLink": "Connexion",
     "hello": "Bonjour, {{displayName}}"
   },
@@ -41,6 +42,9 @@
       }
     },
     "signout": "Déconnexion"
+  },
+  "basket": {
+    "title": "Votre panier"
   },
   "generic": {
     "save": "Enregistrer"
