@@ -41,7 +41,7 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
     return () => {
       setBreadcrumbs([]);
     };
-  }, []);
+  }, [breadcrumbs, setBreadcrumbs, t, user]);
 
   if (!user) return null;
 

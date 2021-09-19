@@ -7,8 +7,8 @@ export interface Link {
 }
 
 interface HeaderContext {
-  breadcrumbs?: Link[];
-  setBreadcrumbs: (links: Link[]) => void;
+  breadcrumbs?: Link[] | null;
+  setBreadcrumbs: (links: Link[] | null) => void;
 }
 
 export const context = createContext<HeaderContext>({
@@ -19,7 +19,7 @@ export const useHeader = () => useContext(context);
 
 export const HeaderProvider: FC = ({ children }) => {
   const { t } = useTranslation();
-  const [breadcrumbs, setBreadcrumbs] = useState<Link[]>();
+  const [breadcrumbs, setBreadcrumbs] = useState<Link[] | null>(null);
 
   return (
     <context.Provider

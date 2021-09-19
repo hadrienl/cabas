@@ -64,7 +64,7 @@ export const UserProvider: FC = ({ children }) => {
     return () => {
       authListener && authListener.unsubscribe();
     };
-  }, []);
+  }, [fetchUser]);
 
   const signout = useCallback(() => {
     setUser(undefined);

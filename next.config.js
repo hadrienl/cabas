@@ -3,4 +3,7 @@ module.exports = {
     locales: ['fr'],
     defaultLocale: 'fr',
   },
+  images: {
+    domains: ['eyrtkidmatwveqwbscre.supabase.in'],
+  },
 };

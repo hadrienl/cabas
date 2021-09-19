@@ -6,5 +6,3 @@ export const email = (value: string = '') =>
   )
     ? undefined
     : 'validators.email';
-
-export default {};

@@ -19,7 +19,7 @@ export const Field: FC<FieldProps> = ({ name, label, children, ...props }) => {
   useEffect(() => {
     if (!pristine) return;
     setPristine(!dirty);
-  }, [dirty]);
+  }, [dirty, pristine]);
 
   return (
     <Box className="p-field" alignItems="stretch" {...(props as any)}>

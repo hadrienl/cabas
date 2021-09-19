@@ -5,6 +5,7 @@ import { Button } from 'primereact/button';
 import { Avatar } from 'primereact/avatar';
 import { Tooltip } from 'primereact/tooltip';
 import { BreadCrumb } from 'primereact/breadcrumb';
+import { Badge } from 'primereact/badge';
 
 import Box from 'components/Box';
 import Text from 'components/Text';
@@ -43,11 +44,15 @@ export const Header = () => {
         },
         ...(breadcrumbs || []),
       ].filter(Boolean) as ILink[],
-    [user, breadcrumbs]
+    [user, t, breadcrumbs]
   );
 
   const navigateAccount = () => {
     push('/account');
+  };
+
+  const navigateBasket = () => {
+    push('/basket');
   };
 
   return (
@@ -78,7 +83,7 @@ export const Header = () => {
             home={{
               icon: 'pi pi-home',
               url: '/',
-              command: ({ originalEvent }: { originalEvent: Event }) => {
+              command: ({ originalEvent }) => {
                 originalEvent.preventDefault();
                 push('/');
               },
@@ -89,6 +94,22 @@ export const Header = () => {
       <Box flexDirection="row">
         {user && (
           <>
+            <Tooltip target=".basket-button" position="left" />
+            <Box
+              onClick={navigateBasket}
+              cursor="pointer"
+              className="basket-button"
+              data-pr-tooltip={t('header.basketLink')}
+              mr={3}
+            >
+              <Avatar
+                className="p-overlay-badge"
+                image="/static/images/icons/basket.svg"
+                size="large"
+              >
+                {/*<Badge value="499" />*/}
+              </Avatar>
+            </Box>
             <Tooltip target=".user-button" position="left" />
             <Box
               onClick={navigateAccount}
@@ -96,12 +117,16 @@ export const Header = () => {
               className="user-button"
               data-pr-tooltip={t('header.accountLink')}
             >
-              <Avatar label={getInitials(user)} icon="pi pi-user" />
+              <Avatar
+                label={getInitials(user)}
+                icon="pi pi-user"
+                size="large"
+              />
             </Box>
           </>
         )}
         {user === null && (
-          <Link href="/signin">
+          <Link href="/signin" passHref>
             <Button
               icon="pi pi-sign-in"
               tooltip={t('header.connectionLink')}

@@ -37,6 +37,7 @@ export type BoxProps = BorderProps &
     right?: string;
     bottom?: string;
     overflow?: 'hidden' | 'visible' | 'auto' | 'scroll';
+    css?: string;
   };
 
 const styles = [
@@ -93,7 +94,8 @@ Box.defaultProps = {
   flex: '0 0 auto',
   flexDirection: 'column',
   justifyContent: 'start',
-  alignItems: 'start',
+  alignItems: 'stretch',
+  fontSize: 0,
 };
 
 export default Box;

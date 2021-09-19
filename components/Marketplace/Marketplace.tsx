@@ -21,7 +21,7 @@ export const Marketplace: React.FC = () => {
   }, []);
   React.useEffect(() => {
     getProducts();
-  }, []);
+  }, [getProducts]);
 
   return (
     <Box>
