@@ -25,8 +25,6 @@ CREATE TABLE product (
   name text,
   description text,
   photo text,
-  unit int,
-  price float,
   fk_producer bigint NOT NULL REFERENCES producer(id),
   fk_tag bigint REFERENCES tag(id)  
 );
@@ -48,5 +46,8 @@ CREATE TABLE product_in_distribution (
   updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()) NOT NULL,
   fk_distribution bigint NOT NULL REFERENCES distribution(id),
   fk_product bigint NOT NULL REFERENCES product(id),
-  price float
+  unit int NOT NULL DEFAULT 1,
+  unit_label text,
+  per_unit int NOT NULL DEFAULT 1,
+  price float NOT NULL
 );
