@@ -86,6 +86,10 @@
     "addToBasket": {
       "totalPrice": "= {{price}}",
       "label": "Ajouter au panier"
+    },
+    "distributed": {
+      "future": "Sera distribué à partir du {{startAt}}.",
+      "past": "A été distribué jusqu'au {{closeAt}}."
     }
   }
 }

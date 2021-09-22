@@ -1,21 +1,23 @@
+import supabase from 'lib/supabase';
+import slug from 'slug';
 import { GetStaticProps } from 'next';
 
-import {
-  getBuyableProducts,
-  getProductById,
-  getProducts,
-} from 'resources/products';
 import { ProductViewProps } from 'views/Product/Product';
+import {
+  Distribution,
+  ProductBase,
+  ProductInDistribution,
+} from 'resources/types';
 
 export { default } from 'views/Product/Product';
 
 export async function getStaticPaths() {
-  const { products } = await getProducts();
+  const { data } = await await supabase.from('product').select(`id, name`);
 
   return {
-    paths: (products || []).map(({ id, name }) => ({
+    paths: (data || []).map(({ id, name }) => ({
       params: {
-        slug: `${id}-${name}`,
+        slug: `${id}-${slug(name)}`,
       },
     })),
     fallback: false,
@@ -29,11 +31,49 @@ export const getStaticProps: GetStaticProps<
   const [id] = slug.split(/-/);
 
   try {
-    const product = await getBuyableProducts(await getProductById(id));
+    const { data } = await supabase
+      .from<
+        ProductBase & {
+          pid: (ProductInDistribution & {
+            distribution: Distribution;
+          })[];
+        }
+      >('product')
+      .select(
+        `id,
+      name,
+      description,
+      photo,
+      producer(id, name),
+      tag(slug, name),
+      pid: product_in_distribution(
+        unit,
+        unitLabel: unit_label,
+        perUnit: per_unit,
+        price,
+        distribution(
+          id,
+          startAt: start_at,
+          closeAt: close_at,
+          shipAt: ship_at
+        )
+      )`
+      )
+      .eq('id', id)
+      .single();
 
+    if (!data) throw new Error('not found');
+
+    const { pid = [], ...product } = data;
     return {
       props: {
-        product,
+        product: {
+          ...product,
+          distributions: pid.map(({ distribution, ...rest }) => ({
+            ...distribution,
+            ...rest,
+          })),
+        },
       },
     };
   } catch (e) {

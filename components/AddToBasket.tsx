@@ -21,7 +21,7 @@ interface AddToBasketProps {
   product: Product;
 }
 export const AddToBasket: FC<AddToBasketProps> = ({
-  product: { isBuyable, id, unit, price },
+  product: { id, unit, price },
 }) => {
   const {
     t,
@@ -47,40 +47,34 @@ export const AddToBasket: FC<AddToBasketProps> = ({
               context: `${unit}`,
             })}
           </Text>
-          {isBuyable && (
-            <Text ml={2}>
-              {t('product.addToBasket.totalPrice', {
-                price: new Intl.NumberFormat(language, {
-                  currency: 'EUR',
-                  style: 'currency',
-                }).format(total),
-              })}
-            </Text>
-          )}
-        </Box>
-        {isBuyable && (
-          <InputNumber
-            value={count}
-            onValueChange={({ value }) => setCount(+value)}
-            mode="decimal"
-            showButtons
-            buttonLayout="horizontal"
-            size={5}
-            min={0}
-            suffix={suffix}
-            maxFractionDigits={2}
-            inputMode="decimal"
-            step={unit === ProductUnit.Piece ? 1 : 0.1}
-          />
-        )}
-      </Box>
-      {isBuyable && (
-        <Button type="button" onClick={add}>
-          <Text justifyContent="center" flex="1">
-            {t('product.addToBasket.label')}
+          <Text ml={2}>
+            {t('product.addToBasket.totalPrice', {
+              price: new Intl.NumberFormat(language, {
+                currency: 'EUR',
+                style: 'currency',
+              }).format(total),
+            })}
           </Text>
-        </Button>
-      )}
+        </Box>
+        <InputNumber
+          value={count}
+          onValueChange={({ value }) => setCount(+value)}
+          mode="decimal"
+          showButtons
+          buttonLayout="horizontal"
+          size={5}
+          min={0}
+          suffix={suffix}
+          maxFractionDigits={2}
+          inputMode="decimal"
+          step={unit === ProductUnit.Piece ? 1 : 0.1}
+        />
+      </Box>
+      <Button type="button" onClick={add}>
+        <Text justifyContent="center" flex="1">
+          {t('product.addToBasket.label')}
+        </Text>
+      </Button>
     </Box>
   );
 };

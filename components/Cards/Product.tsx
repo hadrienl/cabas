@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import Image from 'next/image';
+import slug from 'slug';
 
 import Box from 'components/Box';
 import { Product } from 'resources/types';
@@ -16,8 +16,20 @@ interface ProductCardProps {
 
 export const ProductCard: FC<ProductCardProps> = ({
   product,
-  product: { id, name, photo, price, unit, producer, tag, isBuyable },
+  product: {
+    id,
+    name,
+    photo,
+    unit,
+    unitLabel,
+    perUnit,
+    price,
+    producer,
+    tag,
+    isBuyable,
+  },
 }) => {
+  console.log(product);
   const {
     t,
     i18next: { language },
@@ -31,7 +43,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         margin={2}
         mb={producer ? 1 : 2}
       >
-        <Link href={`/product/${id}-${name}`}>{name}</Link>
+        <Link href={`/product/${id}-${slug(name)}`}>{name}</Link>
         {tag && <Link href={`/tag/${tag.slug}`}>{tag.name}</Link>}
       </Text>
       {producer && (
@@ -46,7 +58,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         </Link>
       )}
       <Link
-        href={`/product/${id}-${name}`}
+        href={`/product/${id}-${slug(name)}`}
         maxHeight="200px"
         overflow="hidden"
         justifyContent="center"

@@ -12,18 +12,17 @@ export interface Producer {
 }
 
 export enum ProductUnit {
+  None = 0,
   Piece = 1,
   Kg = 2,
   Liter = 3,
 }
-export interface Product {
+
+export interface ProductBase {
   id: number;
   name: string;
   photo: string;
   description: string;
-  price: number;
-  unit: ProductUnit;
-  isBuyable?: boolean;
   producer?: Producer;
   tag?: Tag;
 }
@@ -34,4 +33,19 @@ export interface Distribution {
   closeAt: string;
   shipAt: string;
   products: Product[];
+}
+
+export interface ProductInDistribution {
+  unit: ProductUnit;
+  unitLabel: string;
+  perUnit: number;
+  price: number;
+}
+
+export interface ProductWithDistributions extends ProductBase {
+  distributions: (Omit<Distribution, 'products'> & ProductInDistribution)[];
+}
+
+export interface Product extends ProductBase, ProductInDistribution {
+  isBuyable?: boolean;
 }

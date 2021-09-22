@@ -15,7 +15,9 @@ export const getProducts = async () => {
 export const getProductById = async (id: string) => {
   const { data } = await supabase
     .from('product')
-    .select(`*, tag(*), producer(*)`)
+    .select(
+      `id, name, description, photo, tag(slug, name), producer(id, name, description, photo)`
+    )
     .eq('id', id)
     .single();
 
@@ -76,7 +78,9 @@ export const getBuyableProducts: {
   const now = new Date();
   const { data = {} } = await supabase
     .from('distribution')
-    .select('product(id), product_in_distribution(price)')
+    .select(
+      'product(id), product_in_distribution(unit, unitLabel: unit_label, perUnit: per_unit, price)'
+    )
     .lt('start_at', now.toUTCString())
     .gte('close_at', now.toUTCString())
     .single();
