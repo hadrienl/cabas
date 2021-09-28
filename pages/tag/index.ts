@@ -1,14 +1,15 @@
+import supabase from 'lib/supabase';
 import { GetStaticProps } from 'next';
-import { getTags } from 'resources/tags';
+import { Tag } from 'types/Entities';
 import { TagsViewProps } from 'views/Tag/Tags';
 
 export { default } from 'views/Tag/Tags';
 
 export const getStaticProps: GetStaticProps<TagsViewProps> = async () => {
-  const { tags } = await getTags();
+  const { data } = await supabase.from<Tag>('tag').select('id, slug, name');
   return {
     props: {
-      tags,
+      tags: data || [],
     },
   };
 };

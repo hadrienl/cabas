@@ -7,7 +7,7 @@ import {
   Distribution,
   ProductBase,
   ProductInDistribution,
-} from 'resources/types';
+} from 'types/Entities';
 
 export { default } from 'views/Product/Product';
 

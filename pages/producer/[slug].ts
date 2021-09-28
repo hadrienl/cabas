@@ -1,20 +1,30 @@
+import { getDistributionTimeRange } from 'lib/dates';
+import supabase from 'lib/supabase';
 import { GetStaticProps } from 'next';
-import { getProducerById, getProducers } from 'resources/producers';
-import { getBuyableProducts, getProducerProducts } from 'resources/products';
+import slugFn from 'slug';
+
+import {
+  Distribution,
+  Producer,
+  Product,
+  ProductInDistribution,
+} from 'types/Entities';
 import { ProducerViewProps } from 'views/Producer/Producer';
 
 export { default } from 'views/Producer/Producer';
 
 export async function getStaticPaths() {
-  const { producers } = await getProducers();
+  const { data: producers } = await supabase
+    .from<Pick<Producer, 'id' | 'name'>>('producer')
+    .select('id, name');
 
   return {
     paths: (producers || []).map(({ id, name }) => ({
       params: {
-        slug: `${id}-${name}`,
+        slug: `${id}-${slugFn(name)}`,
       },
     })),
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -22,16 +32,92 @@ export const getStaticProps: GetStaticProps<
   ProducerViewProps,
   { slug: string }
 > = async ({ params: { slug = '' } = {} }) => {
-  const [id] = slug.split(/-/);
+  const [id, ...rest] = slug.split(/-/);
+  const slugName = rest.join('-');
 
   try {
-    const producer = await getProducerById(id);
-    const { products } = await getProducerProducts(producer.id);
+    const { data: producer } = await supabase
+      .from<Producer>('producer')
+      .select('id, name, description, photo')
+      .eq('id', id)
+      .single();
 
+    if (!producer) {
+      throw new Error('not found');
+    }
+
+    if (slugName !== slugFn(producer.name)) {
+      return {
+        redirect: {
+          destination: `/producer/${id}-${slugFn(producer.name)}`,
+          permanent: true,
+        },
+      };
+    }
+    const { data } = await supabase
+      .from<
+        Product & {
+          distributions: Distribution[];
+          pid: (ProductInDistribution & {
+            fk_distribution: number;
+          })[];
+          fk_producer: number;
+        }
+      >('product')
+      .select(
+        `id,
+        name,
+        description,
+        photo,
+        tag(slug, name),
+        distributions: distribution(
+          id,
+          startAt: start_at,
+          closeAt: close_at,
+          shipAt: ship_at
+        ),
+        pid: product_in_distribution(
+          fk_distribution,
+          unit,
+          unitLabel: unit_label,
+          perUnit: per_unit,
+          price
+        )`
+      )
+      .eq('fk_producer', id);
+    const products = (data || []).map(({ distributions, pid, ...product }) => {
+      return {
+        ...product,
+        distributions: distributions.map(({ id, ...d }) => {
+          const { fk_distribution, ...relatedPid } = pid.find(
+            ({ fk_distribution }) => fk_distribution === id
+          )!;
+          return {
+            id,
+            ...d,
+            ...relatedPid,
+          };
+        }),
+      };
+    });
+    products.sort((pA, pB) => {
+      const pAIsInCurrent = pA.distributions.find(
+        ({ startAt, closeAt }) =>
+          getDistributionTimeRange(startAt, closeAt) === 'current'
+      );
+      const pBIsInCurrent = pB.distributions.find(
+        ({ startAt, closeAt }) =>
+          getDistributionTimeRange(startAt, closeAt) === 'current'
+      );
+      if (pAIsInCurrent && pBIsInCurrent) return 0;
+      if (pAIsInCurrent) return -1;
+      if (pBIsInCurrent) return 1;
+      return 0;
+    });
     return {
       props: {
         producer,
-        products: await getBuyableProducts(products),
+        products,
       },
     };
   } catch (e) {

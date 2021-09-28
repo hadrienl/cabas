@@ -5,15 +5,52 @@ export interface User {
   email: string;
   picture: string;
 }
-export interface Provider {
-  id: string;
+
+export interface Tag {
+  id: number;
+  slug: string;
   name: string;
-  url: string;
-  description: string;
 }
 
-export interface Product {
-  id: string;
+export interface Producer {
+  id: number;
   name: string;
-  provider?: Provider;
+  description: string;
+  photo?: string;
 }
+
+export enum ProductUnit {
+  None = 0,
+  Piece = 1,
+  Kg = 2,
+  Liter = 3,
+}
+
+export interface ProductBase {
+  id: number;
+  name: string;
+  photo: string;
+  description: string;
+  producer?: Producer;
+  tag?: Tag;
+}
+
+export interface Distribution {
+  id: number;
+  startAt: string;
+  closeAt: string;
+  shipAt: string;
+}
+
+export interface ProductInDistribution {
+  unit: ProductUnit;
+  unitLabel: string;
+  perUnit: number;
+  price: number;
+}
+
+export interface ProductWithDistributions extends ProductBase {
+  distributions: (Distribution & ProductInDistribution)[];
+}
+
+export interface Product extends ProductBase, ProductInDistribution {}

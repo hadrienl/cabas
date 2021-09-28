@@ -5,7 +5,7 @@ import Main from 'components/Main';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
 import { FC, useEffect } from 'react';
-import { Tag } from 'resources/types';
+import { Tag } from 'types/Entities';
 
 export interface TagsViewProps {
   tags: Tag[];

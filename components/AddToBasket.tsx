@@ -1,11 +1,12 @@
-import { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
-import { Product, ProductUnit } from 'resources/types';
+import { ProductUnit } from 'types/Entities';
 import Box from './Box';
 import Text from './Text';
 import { useTranslation } from 'lib/i18n';
+import useNumberFormat from 'lib/useNumberFormat';
 
 const getSuffix = (unit: ProductUnit) => {
   switch (unit) {
@@ -18,15 +19,13 @@ const getSuffix = (unit: ProductUnit) => {
   }
 };
 interface AddToBasketProps {
-  product: Product;
+  id: number;
+  unit: ProductUnit;
+  price: number;
 }
-export const AddToBasket: FC<AddToBasketProps> = ({
-  product: { id, unit, price },
-}) => {
-  const {
-    t,
-    i18next: { language },
-  } = useTranslation();
+export const AddToBasket: FC<AddToBasketProps> = ({ id, unit, price }) => {
+  const { t } = useTranslation();
+  const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
   const add = useCallback(() => {
     console.log(`add ${count} products #${id}`);
@@ -39,20 +38,20 @@ export const AddToBasket: FC<AddToBasketProps> = ({
       <Box flexDirection="row" justifyContent="space-between" mb={2}>
         <Box>
           <Text fontSize={4}>
-            {t('distributions.product.price', {
-              price: new Intl.NumberFormat(language, {
+            {t('product.price', {
+              price: numberFormat(price, {
                 style: 'currency',
                 currency: 'EUR',
-              }).format(price),
+              }),
               context: `${unit}`,
             })}
           </Text>
           <Text ml={2}>
             {t('product.addToBasket.totalPrice', {
-              price: new Intl.NumberFormat(language, {
+              price: numberFormat(total, {
                 currency: 'EUR',
                 style: 'currency',
-              }).format(total),
+              }),
             })}
           </Text>
         </Box>

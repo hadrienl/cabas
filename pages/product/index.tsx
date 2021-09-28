@@ -2,7 +2,7 @@ import { GetStaticProps } from 'next';
 
 import supabase from 'lib/supabase';
 import { ProductsViewProps } from 'views/Product/Products';
-import { Distribution, Product } from 'resources/types';
+import { Distribution, Product } from 'types/Entities';
 
 export { default } from 'views/Product/Products';
 

@@ -6,14 +6,11 @@ import Main from 'components/Main';
 import Markdown from 'components/Markdown';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import {
-  Product,
-  ProductUnit,
-  ProductWithDistributions,
-} from 'resources/types';
+import { Product, ProductUnit, ProductWithDistributions } from 'types/Entities';
 import AddToBasket from 'components/AddToBasket';
 import Link from 'components/Link';
 import { useDateFormat } from 'lib/useDateFormat';
+import slug from 'slug';
 
 export interface ProductViewProps {
   product: ProductWithDistributions;
@@ -66,11 +63,11 @@ export const ProductView: FC<ProductViewProps> = ({
       [
         { url: '/product', label: t('product.title') },
         producer && {
-          url: `/producer/${producer.id}-${producer.name}`,
+          url: `/producer/${producer.id}-${slug(producer.name)}`,
           label: producer.name,
         },
         {
-          url: `/product/${id}-${name}`,
+          url: `/product/${id}-${slug(name)}`,
           label: name,
         },
       ].filter(Boolean) as ILink[]
@@ -100,7 +97,7 @@ export const ProductView: FC<ProductViewProps> = ({
         )}
         <Box ml={photo ? 2 : 0} flex="1">
           <Markdown flex="1">{description}</Markdown>
-          {current && <AddToBasket product={product} />}
+          {current && <AddToBasket {...product} />}
         </Box>
       </Box>
       {!current && future.length > 0 && (

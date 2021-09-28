@@ -5,10 +5,12 @@ export const useDateFormat = () => {
     i18next: { language: currentLang },
   } = useTranslation();
   return (
-    date: number | Date,
+    date: number | Date | string,
     {
       language = currentLang,
       ...options
     }: Intl.DateTimeFormatOptions & { language?: string } = {}
-  ) => Intl.DateTimeFormat(language, options).format(date);
+  ) => Intl.DateTimeFormat(language, options).format(new Date(date));
 };
+
+export default useDateFormat;

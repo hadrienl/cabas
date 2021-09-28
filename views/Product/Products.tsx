@@ -5,7 +5,7 @@ import { useHeader } from 'components/Header/HeaderProvider';
 import Main from 'components/Main';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import { Product } from 'resources/types';
+import { Product } from 'types/Entities';
 import Link from 'components/Link';
 import slug from 'slug';
 
