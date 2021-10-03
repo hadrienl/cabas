@@ -76,7 +76,8 @@
   },
   "producer": {
     "title": "Producteurs",
-    "products": "Ses produits"
+    "products": "Ses produits",
+    "empty": "Aucun produit de {{procuder}} n'est proposé dans la distribution en cours."
   },
   "product": {
     "title": "Produits",

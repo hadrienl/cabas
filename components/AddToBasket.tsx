@@ -2,11 +2,7 @@ import { FC, useCallback, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
-import {
-  ProductUnit,
-  ProductInDistribution,
-  Distribution,
-} from 'types/Entities';
+import { ProductUnit, ProductInDistribution, Product } from 'types/Entities';
 import Box from './Box';
 import Text from './Text';
 import { useTranslation } from 'lib/i18n';
@@ -22,7 +18,7 @@ const getSuffix = (unit: ProductUnit) => {
       return '';
   }
 };
-interface AddToBasketProps extends ProductInDistribution, Distribution {}
+interface AddToBasketProps extends Pick<Product, 'id'>, ProductInDistribution {}
 export const AddToBasket: FC<AddToBasketProps> = ({
   id,
   unit,

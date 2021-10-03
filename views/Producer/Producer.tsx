@@ -8,7 +8,6 @@ import {
   Producer,
   Product,
   ProductInDistribution,
-  ProductWithDistributions,
 } from 'types/Entities';
 import Cards from 'components/Cards/Cards';
 import ProductCard from 'components/Cards/Product';
@@ -46,18 +45,14 @@ export const ProducerView: FC<ProducerViewProps> = ({
     return () => setBreadcrumbs(null);
   }, [id, name, setBreadcrumbs, t]);
 
-  const { inCurrentDistribution, notInCurrentDistribution } = useMemo(() => {
-    const inCurrentDistribution = products.filter(
-      ({ distribution: { startAt, closeAt } }) =>
-        getDistributionTimeRange(startAt, closeAt) === 'current'
-    );
-    const notInCurrentDistribution = products.filter(
-      ({ id, distribution: { startAt, closeAt } }) =>
-        !inCurrentDistribution.find(({ id: currentId }) => currentId === id) &&
-        getDistributionTimeRange(startAt, closeAt) !== 'current'
-    );
-    return { inCurrentDistribution, notInCurrentDistribution };
-  }, [products]);
+  const inCurrentDistribution = useMemo(
+    () =>
+      products.filter(
+        ({ distribution: { startAt, closeAt } }) =>
+          getDistributionTimeRange(startAt, closeAt) === 'current'
+      ),
+    [products]
+  );
 
   return (
     <Main>
@@ -79,35 +74,27 @@ export const ProducerView: FC<ProducerViewProps> = ({
             <Markdown flex="1">{description}</Markdown>
           </Box>
         </Box>
-        <Text as="h2">{t('producer.products')}</Text>
-        {inCurrentDistribution && (
-          <Cards>
-            {inCurrentDistribution.map(({ distribution, ...product }) => {
-              return (
-                <ProductCard
-                  key={product.id}
-                  {...product}
-                  distributed={distribution}
-                  link={`/distribution/${distribution.id}/${product.id}-${slug(
-                    product.name
-                  )}`}
-                />
-              );
-            })}
-          </Cards>
+        {inCurrentDistribution.length > 0 && (
+          <>
+            <Text as="h2">{t('producer.products')}</Text>
+            <Cards>
+              {inCurrentDistribution.map(({ distribution, ...product }) => {
+                return (
+                  <ProductCard
+                    key={product.id}
+                    {...product}
+                    distributed={distribution}
+                    link={`/distribution/${distribution.id}/${
+                      product.id
+                    }-${slug(product.name)}`}
+                  />
+                );
+              })}
+            </Cards>
+          </>
         )}
-        {notInCurrentDistribution && (
-          <Cards>
-            {notInCurrentDistribution.map(({ distribution, ...product }) => {
-              return (
-                <ProductCard
-                  key={product.id}
-                  {...product}
-                  link={`/product/${product.id}-${slug(product.name)}`}
-                />
-              );
-            })}
-          </Cards>
+        {inCurrentDistribution.length === 0 && (
+          <Text as="h2">{t('producer.empty', { producer: name })}</Text>
         )}
       </Box>
     </Main>
