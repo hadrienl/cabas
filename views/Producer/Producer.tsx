@@ -3,7 +3,13 @@ import { FC, useEffect, useMemo } from 'react';
 import Box from 'components/Box';
 import Text from 'components/Text';
 import Main from 'components/Main';
-import { Producer, ProductWithDistributions } from 'types/Entities';
+import {
+  Distribution,
+  Producer,
+  Product,
+  ProductInDistribution,
+  ProductWithDistributions,
+} from 'types/Entities';
 import Cards from 'components/Cards/Cards';
 import ProductCard from 'components/Cards/Product';
 import { Link, useHeader } from 'components/Header/HeaderProvider';
@@ -15,7 +21,9 @@ import slug from 'slug';
 
 export interface ProducerViewProps {
   producer: Producer;
-  products: ProductWithDistributions[];
+  products: (Product & {
+    distribution: ProductInDistribution & Distribution;
+  })[];
 }
 
 export const ProducerView: FC<ProducerViewProps> = ({
@@ -38,27 +46,18 @@ export const ProducerView: FC<ProducerViewProps> = ({
     return () => setBreadcrumbs(null);
   }, [id, name, setBreadcrumbs, t]);
 
-  const inCurrentDistribution = useMemo(
-    () =>
-      products.filter(({ distributions }) =>
-        distributions.find(
-          ({ startAt, closeAt }) =>
-            getDistributionTimeRange(startAt, closeAt) === 'current'
-        )
-      ),
-    [products]
-  );
-  const notInCurrentDistribution = useMemo(
-    () =>
-      products.filter(
-        ({ distributions }) =>
-          !distributions.find(
-            ({ startAt, closeAt }) =>
-              getDistributionTimeRange(startAt, closeAt) === 'current'
-          )
-      ),
-    [products]
-  );
+  const { inCurrentDistribution, notInCurrentDistribution } = useMemo(() => {
+    const inCurrentDistribution = products.filter(
+      ({ distribution: { startAt, closeAt } }) =>
+        getDistributionTimeRange(startAt, closeAt) === 'current'
+    );
+    const notInCurrentDistribution = products.filter(
+      ({ id, distribution: { startAt, closeAt } }) =>
+        !inCurrentDistribution.find(({ id: currentId }) => currentId === id) &&
+        getDistributionTimeRange(startAt, closeAt) !== 'current'
+    );
+    return { inCurrentDistribution, notInCurrentDistribution };
+  }, [products]);
 
   return (
     <Main>
@@ -83,23 +82,15 @@ export const ProducerView: FC<ProducerViewProps> = ({
         <Text as="h2">{t('producer.products')}</Text>
         {inCurrentDistribution && (
           <Cards>
-            {inCurrentDistribution.map(({ distributions, ...product }) => {
-              const currentDistribution = distributions.find(
-                ({ startAt, closeAt }) =>
-                  getDistributionTimeRange(startAt, closeAt) === 'current'
-              );
+            {inCurrentDistribution.map(({ distribution, ...product }) => {
               return (
                 <ProductCard
                   key={product.id}
                   {...product}
-                  canBuy={currentDistribution}
-                  link={
-                    currentDistribution
-                      ? `/distribution/${currentDistribution.id}/${
-                          product.id
-                        }-${slug(product.name)}`
-                      : `/product/${product.id}-${slug(product.name)}`
-                  }
+                  distributed={distribution}
+                  link={`/distribution/${distribution.id}/${product.id}-${slug(
+                    product.name
+                  )}`}
                 />
               );
             })}
@@ -107,23 +98,12 @@ export const ProducerView: FC<ProducerViewProps> = ({
         )}
         {notInCurrentDistribution && (
           <Cards>
-            {notInCurrentDistribution.map(({ distributions, ...product }) => {
-              const currentDistribution = distributions.find(
-                ({ startAt, closeAt }) =>
-                  getDistributionTimeRange(startAt, closeAt) === 'current'
-              );
+            {notInCurrentDistribution.map(({ distribution, ...product }) => {
               return (
                 <ProductCard
                   key={product.id}
                   {...product}
-                  canBuy={currentDistribution}
-                  link={
-                    currentDistribution
-                      ? `/distribution/${currentDistribution.id}/${
-                          product.id
-                        }-${slug(product.name)}`
-                      : `/product/${product.id}-${slug(product.name)}`
-                  }
+                  link={`/product/${product.id}-${slug(product.name)}`}
                 />
               );
             })}

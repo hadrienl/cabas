@@ -2,12 +2,7 @@ import { FC } from 'react';
 import slug from 'slug';
 
 import Box from 'components/Box';
-import {
-  Distribution,
-  Product,
-  ProductInDistribution,
-  ProductWithDistributions,
-} from 'types/Entities';
+import { Product, ProductInDistribution, Distribution } from 'types/Entities';
 import Text from 'components/Text';
 
 import { useTranslation } from 'lib/i18n';
@@ -17,7 +12,7 @@ import Link from 'components/Link';
 
 interface ProductCardProps
   extends Pick<Product, 'id' | 'name' | 'photo' | 'producer' | 'tag'> {
-  canBuy?: ProductWithDistributions['distributions'][0];
+  distributed?: ProductInDistribution & Distribution;
   link?: string;
 }
 
@@ -27,7 +22,7 @@ export const ProductCard: FC<ProductCardProps> = ({
   photo,
   producer,
   tag,
-  canBuy,
+  distributed,
   link = `/product/${id}-${slug(name)}`,
 }) => {
   const { t } = useTranslation();
@@ -64,9 +59,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         {!photo && <Box height="200px" />}
       </Link>
       <Box flexDirection="row" justifyContent="space-between" mt={4}>
-        {canBuy && (
-          <AddToBasket id={id} unit={canBuy.unit} price={canBuy.price} />
-        )}
+        {distributed && <AddToBasket {...distributed} />}
       </Box>
     </CardContainer>
   );

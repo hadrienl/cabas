@@ -8,6 +8,7 @@ export const Text = ({ ...props }) => {
 };
 Text.defaultProps = {
   ...Box.defaultProps,
+  as: 'span',
   color: 'var(--text-color)',
 };
 export default Text;

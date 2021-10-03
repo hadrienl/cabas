@@ -44,7 +44,7 @@ export const TagView: FC<TagViewProps> = ({
             <ProductCard
               key={product.id}
               {...product}
-              canBuy={currentDistribution}
+              distributed={currentDistribution}
             />
           );
         })}

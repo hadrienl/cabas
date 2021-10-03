@@ -85,35 +85,41 @@ export const getStaticProps: GetStaticProps<
         )`
       )
       .eq('fk_producer', id);
-    const products = (data || []).map(({ distributions, pid, ...product }) => {
-      return {
-        ...product,
-        distributions: distributions.map(({ id, ...d }) => {
-          const { fk_distribution, ...relatedPid } = pid.find(
-            ({ fk_distribution }) => fk_distribution === id
-          )!;
-          return {
-            id,
-            ...d,
-            ...relatedPid,
-          };
-        }),
-      };
-    });
+
+    const products = (data || []).reduce<ProducerViewProps['products']>(
+      (prev, { distributions, pid, fk_producer, ...product }) => {
+        return [
+          ...prev,
+          ...pid.map(({ fk_distribution, ...pid }) => ({
+            ...product,
+            distribution: {
+              ...distributions.find(({ id }) => fk_distribution === id)!,
+              ...pid,
+            },
+          })),
+        ];
+      },
+      []
+    );
+
     products.sort((pA, pB) => {
-      const pAIsInCurrent = pA.distributions.find(
-        ({ startAt, closeAt }) =>
-          getDistributionTimeRange(startAt, closeAt) === 'current'
-      );
-      const pBIsInCurrent = pB.distributions.find(
-        ({ startAt, closeAt }) =>
-          getDistributionTimeRange(startAt, closeAt) === 'current'
-      );
+      const pAIsInCurrent =
+        getDistributionTimeRange(
+          pA.distribution.startAt,
+          pA.distribution.closeAt
+        ) === 'current';
+      const pBIsInCurrent =
+        getDistributionTimeRange(
+          pB.distribution.startAt,
+          pB.distribution.closeAt
+        ) === 'current';
+
       if (pAIsInCurrent && pBIsInCurrent) return 0;
       if (pAIsInCurrent) return -1;
       if (pBIsInCurrent) return 1;
       return 0;
     });
+    //console.log(products[0].distributions);
     return {
       props: {
         producer,

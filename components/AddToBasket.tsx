@@ -2,7 +2,11 @@ import { FC, useCallback, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
-import { ProductUnit } from 'types/Entities';
+import {
+  ProductUnit,
+  ProductInDistribution,
+  Distribution,
+} from 'types/Entities';
 import Box from './Box';
 import Text from './Text';
 import { useTranslation } from 'lib/i18n';
@@ -18,12 +22,14 @@ const getSuffix = (unit: ProductUnit) => {
       return '';
   }
 };
-interface AddToBasketProps {
-  id: number;
-  unit: ProductUnit;
-  price: number;
-}
-export const AddToBasket: FC<AddToBasketProps> = ({ id, unit, price }) => {
+interface AddToBasketProps extends ProductInDistribution, Distribution {}
+export const AddToBasket: FC<AddToBasketProps> = ({
+  id,
+  unit,
+  price,
+  unitLabel,
+  perUnit,
+}) => {
   const { t } = useTranslation();
   const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
@@ -32,20 +38,23 @@ export const AddToBasket: FC<AddToBasketProps> = ({ id, unit, price }) => {
   }, [count, id]);
   const total = count * price;
   const suffix = getSuffix(unit);
-
+  console.log('unitLabel', unitLabel);
   return (
     <Box flex="1" justifyContent="end">
       <Box flexDirection="row" justifyContent="space-between" mb={2}>
         <Box>
-          <Text fontSize={4}>
-            {t('product.price', {
-              price: numberFormat(price, {
-                style: 'currency',
-                currency: 'EUR',
-              }),
-              context: `${unit}`,
-            })}
-          </Text>
+          <Box flexDirection="row" alignItems="baseline">
+            <Text fontSize={4}>
+              {t('product.price', {
+                price: numberFormat(price, {
+                  style: 'currency',
+                  currency: 'EUR',
+                }),
+                context: `${unit}`,
+              })}
+            </Text>
+            {unitLabel && <Text> / {unitLabel}</Text>}
+          </Box>
           <Text ml={2}>
             {t('product.addToBasket.totalPrice', {
               price: numberFormat(total, {
