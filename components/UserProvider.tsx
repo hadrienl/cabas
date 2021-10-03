@@ -6,14 +6,14 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { User as SBUser } from '@supabase/supabase-js';
+import { User } from '@supabase/supabase-js';
 
 import supabase from 'lib/supabase';
-import { User } from 'types/Entities';
+import { Customer } from 'types/Entities';
 
 export interface UserContext {
-  authUser?: SBUser;
   user?: User | null;
+  customer?: Customer;
   signout: () => void;
 }
 
@@ -24,42 +24,40 @@ export const context = createContext<UserContext>({
 export const useUser = () => useContext(context);
 
 export const UserProvider: FC = ({ children }) => {
-  const [authUser, setAuthUser] = useState<SBUser | undefined>();
-  const [user, setUser] = useState<User | null | undefined>();
+  const [user, setUser] = useState<UserContext['user']>();
+  const [customer, setCustomer] = useState<UserContext['customer']>();
 
   const fetchUser = useCallback(async () => {
-    const authUser = supabase.auth.user();
-    setAuthUser(authUser || undefined);
-    if (!authUser) {
-      setUser(null);
+    const user = supabase.auth.user();
+    setUser(user || null);
+    if (!user) {
+      setCustomer(undefined);
       return;
     }
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', authUser.id);
-    if (!data) {
-      setUser(null);
-      return;
-    }
-    setUser({
-      ...data[0],
-      email: authUser.email,
-    });
+    const { data } = await supabase
+      .from<Customer>('customer')
+      .select(
+        `id,
+        firstName: first_name,
+        lastName: last_name,
+        phone,
+        photo
+      `
+      )
+      .eq('id', user.id)
+      .single();
+    setCustomer(data || undefined);
   }, []);
 
   useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === 'SIGNED_IN') {
-          fetchUser();
-        }
-        if (event === 'SIGNED_OUT') {
-          setAuthUser(undefined);
-          setUser(null);
-        }
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_IN') {
+        fetchUser();
       }
-    );
+      if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
     fetchUser();
     return () => {
       authListener && authListener.unsubscribe();
@@ -67,13 +65,12 @@ export const UserProvider: FC = ({ children }) => {
   }, [fetchUser]);
 
   const signout = useCallback(() => {
-    setUser(undefined);
-    setAuthUser(undefined);
+    setUser(null);
     supabase.auth.signOut();
   }, []);
 
   return (
-    <context.Provider value={{ authUser, user, signout }}>
+    <context.Provider value={{ user, customer, signout }}>
       {children}
     </context.Provider>
   );

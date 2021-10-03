@@ -43,11 +43,12 @@ INSERT INTO public.product (name, description, photo, fk_producer, fk_tag) VALUE
 );
 
 INSERT INTO public.distribution (start_at, close_at, ship_at) VALUES
-('2021-09-01 00:00:00 +02:00', '2021-10-01 00:00:00 +02:00', '2021-10-05 18:00:00 +02:00'),
+('2021-09-01 00:00:00 +02:00', '2021-10-14 00:00:00 +02:00', '2021-10-15 18:00:00 +02:00'),
 ('2021-10-15 00:00:00 +02:00', '2021-11-01 00:00:00 +02:00', '2021-11-05 18:00:00 +02:00');
 
 INSERT INTO public.product_in_distribution (fk_distribution, fk_product, unit, unit_label, per_unit, price) VALUES
-(1, 1, 1, NULL, 1, 2.5),
+(1, 1, 1, '33cl', 1, 2.5),
+(1, 1, 1, '75cl', 1, 4),
 (1, 2, 1, NULL, 1, 2.5),
 (1, 4, 1, 'gros', 1, 8),
 (2, 1, 1, NULL, 1, 2.5),

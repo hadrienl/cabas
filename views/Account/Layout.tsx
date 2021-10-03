@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect } from 'react';
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import Box from 'components/Box';
@@ -8,25 +8,31 @@ import Main from 'components/Main';
 import { useUser } from 'components/UserProvider';
 import { useHeader, Link as ILink } from 'components/Header/HeaderProvider';
 import { useTranslation } from 'lib/i18n';
+import { getEmptyArray } from 'lib/empty';
 
 interface AccountLayoutProps {
   breadcrumbs?: ILink[];
 }
 
+const EMPTY_ARRAY = getEmptyArray<ILink>();
+
 export const AccountLayout: FC<AccountLayoutProps> = ({
   children,
-  breadcrumbs = [],
+  breadcrumbs = EMPTY_ARRAY,
 }) => {
   const { t } = useTranslation();
   const { user, signout } = useUser();
   const { push } = useRouter();
   const { setBreadcrumbs } = useHeader();
 
-  const signOut = async (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    signout();
-    push('/');
-  };
+  const signOut = useCallback(
+    async (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      signout();
+      push('/');
+    },
+    [push, signout]
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -37,11 +43,13 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
       },
       ...breadcrumbs,
     ]);
+  }, [breadcrumbs, setBreadcrumbs, t, user]);
 
+  useEffect(() => {
     return () => {
       setBreadcrumbs([]);
     };
-  }, [breadcrumbs, setBreadcrumbs, t, user]);
+  }, [setBreadcrumbs]);
 
   if (!user) return null;
 

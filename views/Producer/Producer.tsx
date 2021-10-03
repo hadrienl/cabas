@@ -78,18 +78,16 @@ export const ProducerView: FC<ProducerViewProps> = ({
           <>
             <Text as="h2">{t('producer.products')}</Text>
             <Cards>
-              {inCurrentDistribution.map(({ distribution, ...product }) => {
-                return (
-                  <ProductCard
-                    key={product.id}
-                    {...product}
-                    distributed={distribution}
-                    link={`/distribution/${distribution.id}/${
-                      product.id
-                    }-${slug(product.name)}`}
-                  />
-                );
-              })}
+              {inCurrentDistribution.map(({ distribution, ...product }) => (
+                <ProductCard
+                  key={product.id}
+                  {...product}
+                  distributed={distribution}
+                  link={`/distribution/${distribution.id}/${product.id}-${slug(
+                    product.name
+                  )}`}
+                />
+              ))}
             </Cards>
           </>
         )}

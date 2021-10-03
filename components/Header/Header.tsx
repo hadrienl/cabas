@@ -10,41 +10,40 @@ import { Badge } from 'primereact/badge';
 import Box from 'components/Box';
 import Text from 'components/Text';
 import { useUser } from 'components/UserProvider';
-import { User } from 'types/Entities';
+import { Customer } from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
 import { useHeader, Link as ILink } from './HeaderProvider';
 
-const getInitials = (user: User) => {
-  const { firstName, lastName } = user;
-
+const getInitials = ({ firstName, lastName }: Customer) => {
   return `${(firstName || '').substr(0, 1)}${(lastName || '').substr(0, 1)}`;
 };
 
-const getDisplayName = (user: User) => {
-  if (!user) return '';
-  return user.firstName || user.lastName
-    ? `${user.firstName} ${user.lastName}`
-    : user.email;
+const getDisplayName = (customer: Customer) => {
+  if (!customer) return '';
+  return customer.firstName || customer.lastName
+    ? `${customer.firstName} ${customer.lastName}`
+    : customer.email;
 };
 
 export const Header = () => {
   const { t } = useTranslation();
   const { push } = useRouter();
-  const { user } = useUser();
+  const { user, customer } = useUser();
   const { breadcrumbs } = useHeader();
 
   const breadcrumbsWithUser = useMemo(
     () =>
       [
-        user && {
+        customer && {
           label: t('header.hello', {
-            displayName: getDisplayName(user),
+            displayName: getDisplayName(customer),
+            context: getDisplayName(customer) ? 'withname' : null,
           }),
           url: '/account',
         },
         ...(breadcrumbs || []),
       ].filter(Boolean) as ILink[],
-    [user, t, breadcrumbs]
+    [customer, t, breadcrumbs]
   );
 
   const navigateAccount = () => {
@@ -117,15 +116,17 @@ export const Header = () => {
               className="user-button"
               data-pr-tooltip={t('header.accountLink')}
             >
-              <Avatar
-                label={getInitials(user)}
-                icon="pi pi-user"
-                size="large"
-              />
+              {customer && (
+                <Avatar
+                  label={getInitials(customer)}
+                  icon="pi pi-user"
+                  size="large"
+                />
+              )}
             </Box>
           </>
         )}
-        {user === null && (
+        {!user && (
           <Link href="/signin" passHref>
             <Button
               icon="pi pi-sign-in"

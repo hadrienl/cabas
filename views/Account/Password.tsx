@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Form, useForm } from 'react-final-form';
+import { Form } from 'react-final-form';
 
 import Box from 'components/Box';
 import supabase from 'lib/supabase';
@@ -20,9 +20,8 @@ export const Password = () => {
   const session = supabase.auth.session();
   const [error, setError] = useState('');
 
-  if (!session) return null;
-
   const onSubmit = async ({ password }: { password: string }) => {
+    if (!session) return;
     const { error } = await supabase.auth.api.updateUser(session.access_token, {
       password,
     });
@@ -38,8 +37,10 @@ export const Password = () => {
         url: '/account/password',
       },
     ],
-    []
+    [t]
   );
+
+  if (!session) return null;
 
   return (
     <AccountLayout breadcrumbs={breadcrumbs}>

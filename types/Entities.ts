@@ -1,9 +1,10 @@
-export interface User {
+export interface Customer {
   id: string;
+  email: string;
   firstName: string;
   lastName: string;
-  email: string;
-  picture: string;
+  photo: string;
+  phone: string;
 }
 
 export interface Tag {

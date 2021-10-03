@@ -4,7 +4,8 @@
     "accountLink": "Votre compte",
     "basketLink": "Votre panier",
     "connectionLink": "Connexion",
-    "hello": "Bonjour, {{displayName}}"
+    "hello": "Bonjour",
+    "hello_withname": "Bonjour, {{displayName}}"
   },
   "signin": {
     "title": "Connexion",
