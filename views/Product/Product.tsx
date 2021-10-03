@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 
 import Box from 'components/Box';
 import { Link as ILink, useHeader } from 'components/Header/HeaderProvider';
@@ -6,30 +6,68 @@ import Main from 'components/Main';
 import Markdown from 'components/Markdown';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import { Product } from 'resources/types';
+import { Product, ProductUnit, ProductWithDistributions } from 'types/Entities';
 import AddToBasket from 'components/AddToBasket';
 import Link from 'components/Link';
+import { useDateFormat } from 'lib/useDateFormat';
+import slug from 'slug';
 
 export interface ProductViewProps {
-  product: Product;
+  product: ProductWithDistributions;
 }
 
 export const ProductView: FC<ProductViewProps> = ({
-  product,
-  product: { id, name, description, photo, tag, producer },
+  product: { id, name, description, photo, tag, producer, distributions },
 }) => {
   const { t } = useTranslation();
   const { setBreadcrumbs } = useHeader();
+  const dateFormat = useDateFormat();
+
+  const { past, current, future } = useMemo(() => {
+    const now = new Date();
+    const past = distributions.filter(
+      ({ startAt, closeAt }) =>
+        now > new Date(startAt) && now > new Date(closeAt)
+    );
+    const current = distributions.find(
+      ({ startAt, closeAt }) =>
+        now > new Date(startAt) && now < new Date(closeAt)
+    );
+    const future = distributions.filter(
+      ({ startAt, closeAt }) =>
+        now < new Date(startAt) && now < new Date(closeAt)
+    );
+    return { past, current, future };
+  }, [distributions]);
+
+  const product: Product = useMemo(() => {
+    return {
+      ...(current || {
+        unit: ProductUnit.None,
+        unitLabel: '',
+        perUnit: 0,
+        price: 0,
+        isBuyable: false,
+      }),
+      id,
+      name,
+      description,
+      photo,
+      tag,
+      producer,
+    };
+  }, [current, description, id, name, photo, producer, tag]);
+
   useEffect(() => {
     setBreadcrumbs(
       [
         { url: '/product', label: t('product.title') },
         producer && {
-          url: `/producer/${producer.id}-${producer.name}`,
+          url: `/producer/${producer.id}-${slug(producer.name)}`,
           label: producer.name,
         },
         {
-          url: `/product/${id}-${name}`,
+          url: `/product/${id}-${slug(name)}`,
           label: name,
         },
       ].filter(Boolean) as ILink[]
@@ -59,9 +97,31 @@ export const ProductView: FC<ProductViewProps> = ({
         )}
         <Box ml={photo ? 2 : 0} flex="1">
           <Markdown flex="1">{description}</Markdown>
-          <AddToBasket product={product} />
+          {current && <AddToBasket {...product} />}
         </Box>
       </Box>
+      {!current && future.length > 0 && (
+        <Box>
+          <Text as="h2">
+            {t('product.distributed.future', {
+              startAt: dateFormat(new Date(future[0].startAt), {
+                dateStyle: 'long',
+              }),
+            })}
+          </Text>
+        </Box>
+      )}
+      {past.length > 0 && (
+        <Box>
+          <Text as="h2">
+            {t('product.distributed.past', {
+              closeAt: dateFormat(new Date(future[0].closeAt), {
+                dateStyle: 'long',
+              }),
+            })}
+          </Text>
+        </Box>
+      )}
     </Main>
   );
 };

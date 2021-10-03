@@ -5,11 +5,12 @@ import { useHeader } from 'components/Header/HeaderProvider';
 import Main from 'components/Main';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import { Product } from 'resources/types';
+import { Product } from 'types/Entities';
 import Link from 'components/Link';
+import slug from 'slug';
 
 export interface ProductsViewProps {
-  products: Product[];
+  products: Pick<Product, 'id' | 'name'>[];
 }
 export const ProductsView: FC<ProductsViewProps> = ({ products }) => {
   const { t } = useTranslation();
@@ -28,7 +29,7 @@ export const ProductsView: FC<ProductsViewProps> = ({ products }) => {
       <Box my={4} as="ul">
         {products.map(({ id, name }) => (
           <Box key={id} as="li">
-            <Link href={`/product/${id}-${name}`}>{name}</Link>
+            <Link href={`/product/${id}-${slug(name)}`}>{name}</Link>
           </Box>
         ))}
       </Box>

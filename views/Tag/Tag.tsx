@@ -2,15 +2,16 @@ import { FC, useEffect, useMemo } from 'react';
 
 import Main from 'components/Main';
 import Text from 'components/Text';
-import { Product, Tag } from 'resources/types';
+import { Product, ProductWithDistributions, Tag } from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
 import Cards from 'components/Cards/Cards';
 import ProductCard from 'components/Cards/Product';
 import { useHeader } from 'components/Header/HeaderProvider';
+import { getDistributionTimeRange } from 'lib/dates';
 
 export interface TagViewProps {
   tag: Tag;
-  products: Product[];
+  products: ProductWithDistributions[];
 }
 
 export const TagView: FC<TagViewProps> = ({
@@ -28,15 +29,25 @@ export const TagView: FC<TagViewProps> = ({
       },
     ]);
     return () => setBreadcrumbs(null);
-  }, [tag, slug]);
+  }, [tag, slug, setBreadcrumbs, t]);
 
   return (
     <Main>
       <Text as="h1">{t('tag.products.title', { tag })}</Text>
       <Cards>
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {products.map(({ distributions, ...product }) => {
+          const currentDistribution = distributions.find(
+            ({ startAt, closeAt }) =>
+              getDistributionTimeRange(startAt, closeAt) === 'current'
+          );
+          return (
+            <ProductCard
+              key={product.id}
+              {...product}
+              distributed={currentDistribution}
+            />
+          );
+        })}
       </Cards>
     </Main>
   );

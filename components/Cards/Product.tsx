@@ -1,8 +1,8 @@
 import { FC } from 'react';
-import Image from 'next/image';
+import slug from 'slug';
 
 import Box from 'components/Box';
-import { Product } from 'resources/types';
+import { Product, ProductInDistribution, Distribution } from 'types/Entities';
 import Text from 'components/Text';
 
 import { useTranslation } from 'lib/i18n';
@@ -10,18 +10,22 @@ import CardContainer from './CardContainer';
 import AddToBasket from 'components/AddToBasket';
 import Link from 'components/Link';
 
-interface ProductCardProps {
-  product: Product;
+interface ProductCardProps
+  extends Pick<Product, 'id' | 'name' | 'photo' | 'producer' | 'tag'> {
+  distributed?: ProductInDistribution & Distribution;
+  link?: string;
 }
 
 export const ProductCard: FC<ProductCardProps> = ({
-  product,
-  product: { id, name, photo, price, unit, producer, tag, isBuyable },
+  id,
+  name,
+  photo,
+  producer,
+  tag,
+  distributed,
+  link = `/product/${id}-${slug(name)}`,
 }) => {
-  const {
-    t,
-    i18next: { language },
-  } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <CardContainer>
@@ -31,34 +35,31 @@ export const ProductCard: FC<ProductCardProps> = ({
         margin={2}
         mb={producer ? 1 : 2}
       >
-        <Link href={`/product/${id}-${name}`}>{name}</Link>
+        <Link href={link}>{name}</Link>
         {tag && <Link href={`/tag/${tag.slug}`}>{tag.name}</Link>}
       </Text>
       {producer && (
         <Link
-          href={`/producer/${producer.id}-${producer.name}`}
+          href={`/producer/${producer.id}-${slug(producer.name)}`}
           fontSize={0}
           marginX={2}
           mt={1}
           mb={2}
         >
-          {t('distributions.product.producedBy', { name: producer.name })}
+          {t('product.producedBy', { name: producer.name })}
         </Link>
       )}
       <Link
-        href={`/product/${id}-${name}`}
+        href={link}
         maxHeight="200px"
         overflow="hidden"
         justifyContent="center"
       >
-        {photo && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={photo} alt={name} width="100%" />
-        )}
+        {photo && <Box as="img" src={photo} alt={name} width="100%" />}
         {!photo && <Box height="200px" />}
       </Link>
       <Box flexDirection="row" justifyContent="space-between" mt={4}>
-        <AddToBasket product={product} />
+        {distributed && <AddToBasket {...distributed} />}
       </Box>
     </CardContainer>
   );

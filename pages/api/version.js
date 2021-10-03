@@ -2,6 +2,8 @@
 
 import pkg from 'package.json';
 
-export default (req, res) => {
+const version = (req, res) => {
   res.status(200).send(pkg.version);
 };
+
+export default version;

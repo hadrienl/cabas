@@ -1,11 +1,12 @@
-import { ChangeEvent, FC, useCallback, useMemo, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
-import { Product, ProductUnit } from 'resources/types';
+import { ProductUnit, ProductInDistribution, Product } from 'types/Entities';
 import Box from './Box';
 import Text from './Text';
 import { useTranslation } from 'lib/i18n';
+import useNumberFormat from 'lib/useNumberFormat';
 
 const getSuffix = (unit: ProductUnit) => {
   switch (unit) {
@@ -17,70 +18,67 @@ const getSuffix = (unit: ProductUnit) => {
       return '';
   }
 };
-interface AddToBasketProps {
-  product: Product;
-}
+interface AddToBasketProps extends Pick<Product, 'id'>, ProductInDistribution {}
 export const AddToBasket: FC<AddToBasketProps> = ({
-  product: { isBuyable, id, unit, price },
+  id,
+  unit,
+  price,
+  unitLabel,
+  perUnit,
 }) => {
-  const {
-    t,
-    i18next: { language },
-  } = useTranslation();
+  const { t } = useTranslation();
+  const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
   const add = useCallback(() => {
     console.log(`add ${count} products #${id}`);
   }, [count, id]);
   const total = count * price;
   const suffix = getSuffix(unit);
-
+  console.log('unitLabel', unitLabel);
   return (
     <Box flex="1" justifyContent="end">
       <Box flexDirection="row" justifyContent="space-between" mb={2}>
         <Box>
-          <Text fontSize={4}>
-            {t('distributions.product.price', {
-              price: new Intl.NumberFormat(language, {
-                style: 'currency',
-                currency: 'EUR',
-              }).format(price),
-              context: `${unit}`,
-            })}
-          </Text>
-          {isBuyable && (
-            <Text ml={2}>
-              {t('product.addToBasket.totalPrice', {
-                price: new Intl.NumberFormat(language, {
-                  currency: 'EUR',
+          <Box flexDirection="row" alignItems="baseline">
+            <Text fontSize={4}>
+              {t('product.price', {
+                price: numberFormat(price, {
                   style: 'currency',
-                }).format(total),
+                  currency: 'EUR',
+                }),
+                context: `${unit}`,
               })}
             </Text>
-          )}
-        </Box>
-        {isBuyable && (
-          <InputNumber
-            value={count}
-            onValueChange={({ value }) => setCount(+value)}
-            mode="decimal"
-            showButtons
-            buttonLayout="horizontal"
-            size={5}
-            min={0}
-            suffix={suffix}
-            maxFractionDigits={2}
-            inputMode="decimal"
-            step={unit === ProductUnit.Piece ? 1 : 0.1}
-          />
-        )}
-      </Box>
-      {isBuyable && (
-        <Button type="button" onClick={add}>
-          <Text justifyContent="center" flex="1">
-            {t('product.addToBasket.label')}
+            {unitLabel && <Text> / {unitLabel}</Text>}
+          </Box>
+          <Text ml={2}>
+            {t('product.addToBasket.totalPrice', {
+              price: numberFormat(total, {
+                currency: 'EUR',
+                style: 'currency',
+              }),
+            })}
           </Text>
-        </Button>
-      )}
+        </Box>
+        <InputNumber
+          value={count}
+          onValueChange={({ value }) => setCount(+value)}
+          mode="decimal"
+          showButtons
+          buttonLayout="horizontal"
+          size={5}
+          min={0}
+          suffix={suffix}
+          maxFractionDigits={2}
+          inputMode="decimal"
+          step={unit === ProductUnit.Piece ? 1 : 0.1}
+        />
+      </Box>
+      <Button type="button" onClick={add}>
+        <Text justifyContent="center" flex="1">
+          {t('product.addToBasket.label')}
+        </Text>
+      </Button>
     </Box>
   );
 };
