@@ -16,3 +16,23 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+drop trigger if exists on_basket_created on basket;
+drop function if exists public.handle_new_basket;
+create function public.handle_new_basket() 
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.basket
+  set fk_customer = auth.uid()
+  where id = id;
+  return new;
+end;
+$$;
+
+create trigger on_basket_created
+  after insert on basket
+  for each row execute procedure public.handle_new_basket();

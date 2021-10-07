@@ -4,7 +4,7 @@ CREATE POLICY "Customer"
   FOR ALL
   USING (auth.uid() = id);
 
-DROP POLICY IF EXISTS "Basket" ON customer;
+DROP POLICY IF EXISTS "Basket" ON basket;
 CREATE POLICY "Basket"
   ON basket
   FOR ALL

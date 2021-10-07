@@ -50,6 +50,9 @@ export const UserProvider: FC = ({ children }) => {
       )
       .eq('id', user.id)
       .single();
+    if (!data) {
+      setUser(null);
+    }
     setCustomer(data || undefined);
   }, []);
 

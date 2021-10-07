@@ -7,6 +7,7 @@ import Box from './Box';
 import Text from './Text';
 import { useTranslation } from 'lib/i18n';
 import useNumberFormat from 'lib/useNumberFormat';
+import { useBasket } from './BasketProvider';
 
 const getSuffix = (unit: ProductUnit) => {
   switch (unit) {
@@ -27,14 +28,16 @@ export const AddToBasket: FC<AddToBasketProps> = ({
   perUnit,
 }) => {
   const { t } = useTranslation();
+  const { addProduct } = useBasket();
   const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
   const add = useCallback(() => {
     console.log(`add ${count} products #${id}`);
-  }, [count, id]);
+    addProduct(id, count);
+  }, [addProduct, count, id]);
   const total = count * price;
   const suffix = getSuffix(unit);
-  console.log('unitLabel', unitLabel);
+
   return (
     <Box flex="1" justifyContent="end">
       <Box flexDirection="row" justifyContent="space-between" mb={2}>
