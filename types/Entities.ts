@@ -50,8 +50,23 @@ export interface ProductInDistribution {
   price: number;
 }
 
-export interface ProductWithDistributions extends ProductBase {
-  distributions: (Distribution & ProductInDistribution)[];
+export interface Product extends ProductBase, ProductInDistribution {}
+
+export interface ProductInBasket {
+  unitPrice: number;
+  quantity: number;
+  price: number;
 }
 
-export interface Product extends ProductBase, ProductInDistribution {}
+export enum BasketStatus {
+  Pending = 0,
+  Submitted = 1,
+  Paid = 2,
+  Validated = 3,
+  Shipped = 4,
+}
+export interface Basket {
+  status: BasketStatus;
+  total: number;
+  products?: (ProductBase & ProductInDistribution & ProductInBasket)[];
+}

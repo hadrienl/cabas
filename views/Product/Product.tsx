@@ -6,14 +6,21 @@ import Main from 'components/Main';
 import Markdown from 'components/Markdown';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import { Product, ProductUnit, ProductWithDistributions } from 'types/Entities';
+import {
+  Distribution,
+  Product,
+  ProductInDistribution,
+  ProductUnit,
+} from 'types/Entities';
 import AddToBasket from 'components/AddToBasket';
 import Link from 'components/Link';
 import { useDateFormat } from 'lib/useDateFormat';
 import slug from 'slug';
 
 export interface ProductViewProps {
-  product: ProductWithDistributions;
+  product: Product & {
+    distributions: (Distribution & ProductInDistribution)[];
+  };
 }
 
 export const ProductView: FC<ProductViewProps> = ({

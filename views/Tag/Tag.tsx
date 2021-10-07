@@ -2,7 +2,12 @@ import { FC, useEffect, useMemo } from 'react';
 
 import Main from 'components/Main';
 import Text from 'components/Text';
-import { Product, ProductWithDistributions, Tag } from 'types/Entities';
+import {
+  Distribution,
+  Product,
+  ProductInDistribution,
+  Tag,
+} from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
 import Cards from 'components/Cards/Cards';
 import ProductCard from 'components/Cards/Product';
@@ -11,7 +16,9 @@ import { getDistributionTimeRange } from 'lib/dates';
 
 export interface TagViewProps {
   tag: Tag;
-  products: ProductWithDistributions[];
+  products: (Product & {
+    distributions: (Distribution & ProductInDistribution)[];
+  })[];
 }
 
 export const TagView: FC<TagViewProps> = ({
