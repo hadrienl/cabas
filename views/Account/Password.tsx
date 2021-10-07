@@ -22,7 +22,7 @@ export const Password = () => {
 
   const onSubmit = async ({ password }: { password: string }) => {
     if (!session) return;
-    const { error } = await supabase.auth.api.updateUser(session.access_token, {
+    const { error } = await supabase.auth.update({
       password,
     });
     if (error) {
