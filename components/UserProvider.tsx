@@ -12,13 +12,17 @@ import supabase from 'lib/supabase';
 import { Customer } from 'types/Entities';
 
 export interface UserContext {
-  user?: User | null;
+  user?: (User & { new_email?: string }) | null;
   customer?: Customer;
   signout: () => void;
+  updateUser: (userData: Partial<User>) => void;
+  updateProfile: (customerData: Partial<Customer>) => void;
 }
 
 export const context = createContext<UserContext>({
   signout: () => {},
+  updateUser: () => {},
+  updateProfile: () => {},
 });
 
 export const useUser = () => useContext(context);
@@ -69,8 +73,34 @@ export const UserProvider: FC = ({ children }) => {
     supabase.auth.signOut();
   }, []);
 
+  const updateUser = useCallback(async ({ email }) => {
+    await supabase.auth.update({ email });
+  }, []);
+
+  const updateProfile: UserContext['updateProfile'] = useCallback(
+    async ({ firstName, lastName, ...data }) => {
+      const { data: newCustomer } = await supabase
+        .from('customer')
+        .update({
+          first_name: firstName || customer?.firstName,
+          last_name: lastName || customer?.lastName,
+          ...data,
+        })
+        .single();
+      newCustomer &&
+        setCustomer({
+          ...newCustomer,
+          firstName: newCustomer.first_name,
+          lastName: newCustomer.last_name,
+        });
+    },
+    [customer]
+  );
+
   return (
-    <context.Provider value={{ user, customer, signout }}>
+    <context.Provider
+      value={{ user, customer, signout, updateUser, updateProfile }}
+    >
       {children}
     </context.Provider>
   );

@@ -10,5 +10,6 @@ Text.defaultProps = {
   ...Box.defaultProps,
   as: 'span',
   color: 'var(--text-color)',
+  flexDirection: 'row',
 };
 export default Text;

@@ -34,6 +34,25 @@
   "account": {
     "title": "Votre compte",
     "welcome": "Bienvenue",
+    "profile": {
+      "title": "Informations personnelles",
+      "firstName": {
+        "label": "Prénom"
+      },
+      "lastName": {
+        "label": "Nom"
+      },
+      "email": {
+        "label": "Adresse e-mail",
+        "changed": "Pour valider le changement d'email, veuillez vérifier l'email qui vous y a été envoyé."
+      },
+      "photo": {
+        "label": "Photo de profil"
+      },
+      "phone": {
+        "label": "Numéro de téléphone"
+      }
+    },
     "password": {
       "title": "Changer votre mot de passe",
       "label": "Saisissez un nouveau mot de passe",

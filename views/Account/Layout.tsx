@@ -63,6 +63,10 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
           minWidth="200px"
           maxWidth="300px"
         >
+          <Link href="/account/profile" flexDirection="row" alignItems="center">
+            <Box className="pi pi-user" mr={3} />
+            <Text py={3}>{t('account.profile.title')}</Text>
+          </Link>
           <Link
             href="/account/password"
             flexDirection="row"

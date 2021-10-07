@@ -1,17 +1,15 @@
 import { InputText } from 'primereact/inputtext';
 import { Password } from 'primereact/password';
-import { FC, useMemo } from 'react';
+import { FC, InputHTMLAttributes, useMemo } from 'react';
 import { useField } from 'react-final-form';
-
-type InputType = 'text' | 'password';
-interface InputProps {
-  type: InputType;
-  name: string;
+interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   feedback?: boolean;
 }
 
-const getComponentType = (type: InputType): { Component: any; props: any } => {
+const getComponentType = (
+  type: InputHTMLAttributes<HTMLInputElement>['type']
+): { Component: any; props: any } => {
   switch (type) {
     case 'password':
       return {
@@ -25,7 +23,12 @@ const getComponentType = (type: InputType): { Component: any; props: any } => {
   }
 };
 
-export const Input: FC<InputProps> = ({ type, name, label, ...props }) => {
+export const Input: FC<InputProps> = ({
+  type = 'text',
+  name = '',
+  label,
+  ...props
+}) => {
   const { input } = useField(name);
   const { Component, props: componentProps } = useMemo(
     () => getComponentType(type),
