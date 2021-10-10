@@ -78,15 +78,14 @@
   },
   "distributions": {
     "current": "Distribution en cours",
+    "open": "Commandes ouvertes jusqu'au {{closeAt, full}}.",
+    "ship": "Livraison le {{shipAt, full}}.",
     "future": "Prochaine distribution",
     "future_plural": "Prochaines distributions",
-    "past": "Distribution passée",
-    "past_plural": "Distributions passées",
-    "startAt": "Démarre le {{date}}",
-    "closeAt": "Ferme le {{date}}",
-    "shipAt": "Livraison le {{date}}",
-    "producers": "Liste des producteurs",
-    "seeDetails": "Voir les détails"
+    "startAt": "Démarre le {{startAt, full}}",
+    "closeAt": "Ferme le {{closeAt, full}}",
+    "shipAt": "Livraison le {{shipAt, full}}",
+    "notify": "Je veux être prévenu !"
   },
   "tag": {
     "title": "Catégories",

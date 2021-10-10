@@ -32,7 +32,6 @@ export const AddToBasket: FC<AddToBasketProps> = ({
   const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
   const add = useCallback(() => {
-    console.log(`add ${count} products #${id}`);
     addProduct(id, count);
   }, [addProduct, count, id]);
   const total = count * price;

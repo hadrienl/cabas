@@ -1,60 +1,50 @@
-import Cards from 'components/Cards/Cards';
-import ProducerCard from 'components/Cards/Producer';
-import Link from 'components/Link';
+import { FC, useCallback } from 'react';
+
+import Box from 'components/Box';
 import Main from 'components/Main';
 import Text from 'components/Text';
 import { getDistributionTimeRange } from 'lib/dates';
 import { useTranslation } from 'lib/i18n';
-import useDateFormat from 'lib/useDateFormat';
-import { FC } from 'react';
-import { Distribution, Producer } from 'types/Entities';
+import { Button } from 'primereact/button';
+import { Distribution } from 'types/Entities';
 
 export interface DistributionViewProps {
   distribution: Distribution;
-  producers: Producer[];
 }
 export const DistributionView: FC<DistributionViewProps> = ({
   distribution,
-  producers,
 }) => {
   const { t } = useTranslation();
-  const dateFormat = useDateFormat();
   const state = getDistributionTimeRange(
     distribution.startAt,
     distribution.closeAt
   );
 
+  const notify = useCallback(() => {
+    console.log('TODO', distribution.id);
+  }, [distribution.id]);
+
   return (
     <Main>
       <Text as="h1">{t(`distributions.${state}`)}</Text>
       {state === 'future' && (
-        <Text>
-          {t('distributions.startAt', {
-            date: dateFormat(distribution.startAt, { dateStyle: 'long' }),
-          })}
-        </Text>
-      )}
-      {state !== 'past' && (
         <>
           <Text>
-            {t('distributions.closeAt', {
-              date: dateFormat(distribution.closeAt, { dateStyle: 'long' }),
-            })}
+            {t('distributions.startAt', { startAt: distribution.startAt })}
           </Text>
           <Text>
-            {t('distributions.shipAt', {
-              date: dateFormat(distribution.shipAt, { dateStyle: 'long' }),
-            })}
+            {t('distributions.closeAt', { closeAt: distribution.closeAt })}
           </Text>
+          <Text>
+            {t('distributions.shipAt', { shipAt: distribution.shipAt })}
+          </Text>
+          <Box alignSelf="flex-start">
+            <Button type="button" onClick={notify}>
+              <Text>{t('distributions.notify')}</Text>
+            </Button>
+          </Box>
         </>
       )}
-      {state === 'future' && <Text>Je veux être averti par email !</Text>}
-      <Text as="h2">{t('distributions.producers')}</Text>
-      <Cards>
-        {producers.map((producer) => (
-          <ProducerCard key={producer.id} {...producer} />
-        ))}
-      </Cards>
     </Main>
   );
 };

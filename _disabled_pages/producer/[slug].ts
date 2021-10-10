@@ -77,6 +77,7 @@ export const getStaticProps: GetStaticProps<
           shipAt: ship_at
         ),
         pid: product_in_distribution(
+          pid: id,
           fk_distribution,
           unit,
           unitLabel: unit_label,
@@ -90,11 +91,12 @@ export const getStaticProps: GetStaticProps<
       (prev, { distributions, pid, fk_producer, ...product }) => {
         return [
           ...prev,
-          ...pid.map(({ fk_distribution, ...pid }) => ({
+          ...pid.map(({ fk_distribution, pid, ...rest }) => ({
             ...product,
+            pid,
             distribution: {
               ...distributions.find(({ id }) => fk_distribution === id)!,
-              ...pid,
+              ...rest,
             },
           })),
         ];

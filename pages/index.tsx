@@ -1,43 +1,56 @@
 import supabase from 'lib/supabase';
 import { GetStaticProps } from 'next';
+import { DistributedProductWithProducer } from 'types/Entities';
 
-import { Distribution, Producer } from 'types/Entities';
 import { HomeViewProps } from 'views/Home/Home';
 
-export { default } from 'views/Home';
+export { default } from 'views/Home/Home';
 
 export const getStaticProps: GetStaticProps<HomeViewProps> = async () => {
-  const { data } = await supabase
-    .from<
-      Distribution & {
-        products: {
-          producer: Producer;
-        }[];
-      }
-    >('distribution')
+  const { data: distribution } = await supabase
+    .from('current_distribution')
     .select(
       `id,
-    startAt: start_at,
-    closeAt: close_at,
-    shipAt: ship_at,
-    products: product(
-      producer(id, name, description, photo)
-    )`
+      startAt: start_at,
+      closeAt: close_at,
+      shipAt: ship_at
+    `
+    )
+    .single();
+
+  const { data: futureDistributions } = await supabase
+    .from('future_distributions')
+    .select(
+      `id,
+      startAt: start_at,
+      closeAt: close_at,
+      shipAt: ship_at
+    `
     );
 
-  const distributions = (data || []).map(({ products, ...distribution }) => ({
-    ...distribution,
-    producers: products
-      .map(({ producer }) => producer)
-      .reduce<Producer[]>((prev, producer) => {
-        if (prev.find(({ id }) => producer.id === id)) return prev;
-        return [...prev, producer];
-      }, []),
-  }));
+  const { data: products } = await supabase
+    .from<DistributedProductWithProducer>('available_products')
+    .select(
+      `id,
+      name,
+      description,
+      photo,
+      idInDistribution: id_in_distribution,
+      price,
+      unit,
+      perUnit: per_unit,
+      distributionId: distribution_id,
+      producerId: producer_id,
+      producerName: producer_name,
+      producerDescription: producer_description,
+      producerPhoto: producer_photo`
+    );
 
   return {
     props: {
-      distributions,
+      distribution,
+      futureDistributions: futureDistributions || [],
+      products: products || [],
     },
   };
 };

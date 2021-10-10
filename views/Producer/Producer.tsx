@@ -83,7 +83,7 @@ export const ProducerView: FC<ProducerViewProps> = ({
                   key={product.id}
                   {...product}
                   distributed={distribution}
-                  link={`/distribution/${distribution.id}/${product.id}-${slug(
+                  link={`/distribution/${distribution.id}/${product.pid}-${slug(
                     product.name
                   )}`}
                 />

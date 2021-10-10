@@ -44,6 +44,7 @@ export interface Distribution {
 }
 
 export interface ProductInDistribution {
+  pid?: number;
   unit: ProductUnit;
   unitLabel: string;
   perUnit: number;
@@ -69,4 +70,26 @@ export interface Basket {
   status: BasketStatus;
   total: number;
   products?: (ProductBase & ProductInDistribution & ProductInBasket)[];
+}
+
+export interface DistributedProduct {
+  id: number;
+  name: string;
+  description: string;
+  photo: string;
+  idInDistribution: number;
+  price: number;
+  unit: number;
+  unitLabel: string;
+  perUnit: number;
+  distributionId: number;
+  tagName: string;
+  tagSlug: string;
+}
+
+export interface DistributedProductWithProducer extends DistributedProduct {
+  producerId: number;
+  producerName: string;
+  producerDescription: string;
+  producerPhoto: string;
 }

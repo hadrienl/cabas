@@ -46,8 +46,17 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
   const { user } = useUser();
 
   const fetchCurrentBasket = useCallback(async () => {
-    const current = await supabase.from('basket').select(`*`);
-    console.log(current);
+    const { data: current } = await supabase
+      .from('basket')
+      .select(
+        `id,
+      status,
+      total,
+      products: product_in_basket(product(*))`
+      )
+      .eq('status', BasketStatus.Pending)
+      .single();
+    setBasket(current);
   }, []);
   useEffect(() => {
     fetchCurrentBasket();
