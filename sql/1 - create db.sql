@@ -84,6 +84,7 @@ CREATE TABLE product_in_basket (
   fk_basket bigint NOT NULL REFERENCES basket(id),
   fk_product bigint NOT NULL REFERENCES product_in_distribution(id),
   unit_price float,
-  quantity float,
-  price float
+  quantity float
 );
+
+alter table product_in_basket enable row level security;

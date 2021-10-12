@@ -56,7 +56,6 @@ export interface Product extends ProductBase, ProductInDistribution {}
 export interface ProductInBasket {
   unitPrice: number;
   quantity: number;
-  price: number;
 }
 
 export enum BasketStatus {

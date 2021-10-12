@@ -62,3 +62,23 @@ create view future_distributions as
     *
     from distribution
     where start_at > CURRENT_DATE;
+
+drop view if exists current_basket cascade;
+create view current_basket as
+  select
+      basket.*,
+      product_in_basket.unit_price,
+      product_in_basket.quantity,
+      product_in_distribution.id as id_in_distribution,
+      product_in_distribution.unit_label,
+      product_in_distribution.unit,
+      product_in_distribution.per_unit,
+      product_in_distribution.price,
+      product.id as product_id,
+      product.name as product_name,
+      product.description as product_description,
+      product.photo as product_photo
+    from basket
+    left join product_in_basket on product_in_basket.fk_basket = basket.id
+    left join product_in_distribution on product_in_distribution.id = product_in_basket.fk_product
+    left join product on product.id = product_in_distribution.fk_product;
