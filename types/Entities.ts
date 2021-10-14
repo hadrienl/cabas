@@ -54,7 +54,6 @@ export interface ProductInDistribution {
 export interface Product extends ProductBase, ProductInDistribution {}
 
 export interface ProductInBasket {
-  unitPrice: number;
   quantity: number;
 }
 

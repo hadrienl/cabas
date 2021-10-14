@@ -1,4 +1,3 @@
-import supabase from 'lib/supabase';
 import {
   createContext,
   FC,
@@ -7,8 +6,15 @@ import {
   useEffect,
   useState,
 } from 'react';
+import supabase from 'lib/supabase';
 import { Basket, BasketStatus, ProductUnit } from 'types/Entities';
 import { useUser } from './UserProvider';
+import {
+  addInBasketAnonymously,
+  clearBasketAnonymously,
+  getBasketAnonymously,
+  removeInBasketAnonymously,
+} from 'lib/anonymousBasket';
 
 interface BasketContext {
   basket: Basket | null;
@@ -27,18 +33,6 @@ export const context = createContext<BasketContext>({
 
 export const useBasket = () => useContext(context);
 
-const createBasket = async (userId: string) => {
-  // create a new basket
-  const { data } = await supabase
-    .from('basket')
-    .insert({
-      fk_customer: userId,
-      status: BasketStatus.Pending,
-    })
-    .single();
-  return data as Basket;
-};
-
 interface BasketProviderProps {}
 
 export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
@@ -46,6 +40,10 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
   const { user } = useUser();
 
   const fetchCurrentBasket = useCallback(async () => {
+    if (!user) {
+      setBasket(await getBasketAnonymously());
+      return;
+    }
     const { data: productsInBasket } = await supabase
       .from<{
         id: number;
@@ -97,30 +95,37 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
         })
       ),
     };
-    console.log(basket);
+
     setBasket(basket);
-  }, []);
+  }, [user]);
   useEffect(() => {
     fetchCurrentBasket();
   }, [fetchCurrentBasket]);
 
   const addProduct: BasketContext['addProduct'] = useCallback(
     async (id, count) => {
-      if (!user) return;
-      const currentBasket = await (basket || createBasket(user.id));
-      setBasket(currentBasket);
+      if (user) {
+        await supabase.rpc('add_product_to_basket', {
+          product_id: id,
+          quantity: count,
+        });
+      } else {
+        await addInBasketAnonymously(id, count);
+      }
 
-      await supabase.rpc('add_product_to_basket', {
-        product_id: id,
-        quantity: count,
-      });
       fetchCurrentBasket();
     },
-    [basket, fetchCurrentBasket, user]
+    [fetchCurrentBasket, user]
   );
-  const removeProduct: BasketContext['removeProduct'] =
-    useCallback(() => {}, []);
-  const clear: BasketContext['clear'] = useCallback(() => {}, []);
+  const removeProduct: BasketContext['removeProduct'] = useCallback(
+    (id, count) => {
+      if (!user) return removeInBasketAnonymously(id, count);
+    },
+    [user]
+  );
+  const clear: BasketContext['clear'] = useCallback(() => {
+    if (!user) return clearBasketAnonymously();
+  }, [user]);
   const refresh: BasketContext['refresh'] = useCallback(() => {}, []);
 
   return (
