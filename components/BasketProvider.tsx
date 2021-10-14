@@ -64,11 +64,8 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
       .select('*');
 
     if (!productsInBasket) return;
-    const basket = {
-      id: productsInBasket[0].id,
-      status: productsInBasket[0].status,
-      total: productsInBasket[0].total,
-      products: productsInBasket.map(
+    const products = productsInBasket
+      .map(
         ({
           id_in_distribution,
           quantity,
@@ -93,7 +90,24 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
           unitLabel: unit_label,
           unitPrice: unit_price,
         })
+      )
+      .reduce<NonNullable<Basket['products']>>((prev, product) => {
+        const found = prev.find(({ id }) => product.id === id);
+        if (found) {
+          found.quantity += product.quantity;
+          return prev;
+        }
+        return [...prev, product];
+      }, []);
+
+    const basket = {
+      id: productsInBasket[0].id,
+      status: productsInBasket[0].status,
+      total: products.reduce(
+        (prev, { price, quantity }) => prev + price * quantity,
+        0
       ),
+      products,
     };
 
     setBasket(basket);

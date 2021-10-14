@@ -13,6 +13,7 @@ import { useUser } from 'components/UserProvider';
 import { Customer } from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
 import { useHeader, Link as ILink } from './HeaderProvider';
+import { useBasket } from 'components/BasketProvider';
 
 const getInitials = ({ firstName, lastName }: Customer) => {
   return `${(firstName || '').substr(0, 1)}${(lastName || '').substr(0, 1)}`;
@@ -30,6 +31,11 @@ export const Header = () => {
   const { push } = useRouter();
   const { user, customer } = useUser();
   const { breadcrumbs } = useHeader();
+  const { basket } = useBasket();
+  const productsCount =
+    basket && basket.products
+      ? basket.products.reduce((prev, { quantity }) => prev + quantity, 0)
+      : 0;
 
   const breadcrumbsWithUser = useMemo(
     () =>
@@ -90,25 +96,25 @@ export const Header = () => {
           />
         )}
       </Box>
-      <Box flexDirection="row">
+      <Box flexDirection="row" alignItems="center">
+        <Tooltip target=".basket-button" position="left" />
+        <Box
+          onClick={navigateBasket}
+          cursor="pointer"
+          className="basket-button"
+          data-pr-tooltip={t('header.basketLink')}
+          mr={3}
+        >
+          <Avatar
+            className="p-overlay-badge"
+            image="/static/images/icons/basket.svg"
+            size="normal"
+          >
+            <Badge value={productsCount} />
+          </Avatar>
+        </Box>
         {user && (
           <>
-            <Tooltip target=".basket-button" position="left" />
-            <Box
-              onClick={navigateBasket}
-              cursor="pointer"
-              className="basket-button"
-              data-pr-tooltip={t('header.basketLink')}
-              mr={3}
-            >
-              <Avatar
-                className="p-overlay-badge"
-                image="/static/images/icons/basket.svg"
-                size="large"
-              >
-                {/*<Badge value="499" />*/}
-              </Avatar>
-            </Box>
             <Tooltip target=".user-button" position="left" />
             <Box
               onClick={navigateAccount}
