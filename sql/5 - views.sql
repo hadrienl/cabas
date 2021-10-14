@@ -77,8 +77,12 @@ create view current_basket as
       product.id as product_id,
       product.name as product_name,
       product.description as product_description,
-      product.photo as product_photo
+      product.photo as product_photo,
+      distribution.start_at,
+      distribution.close_at
     from basket
     left join product_in_basket on product_in_basket.fk_basket = basket.id
     left join product_in_distribution on product_in_distribution.id = product_in_basket.fk_product
-    left join product on product.id = product_in_distribution.fk_product;
+    left join distribution on distribution.id = product_in_distribution.fk_distribution
+    left join product on product.id = product_in_distribution.fk_product
+    where distribution.start_at < CURRENT_DATE and distribution.close_at > CURRENT_DATE;
