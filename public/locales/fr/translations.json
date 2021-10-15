@@ -1,4 +1,11 @@
 {
+  "generic": {
+    "save": "Enregistrer",
+    "trash": {
+      "label": "Supprimer",
+      "label_confirm": "Supprimer pour de bon !"
+    }
+  },
   "title": "Le Cabas Liassois",
   "header": {
     "accountLink": "Votre compte",
@@ -65,9 +72,6 @@
   },
   "basket": {
     "title": "Votre panier"
-  },
-  "generic": {
-    "save": "Enregistrer"
   },
   "validators": {
     "required": "Veuillez indiquer une valeur",

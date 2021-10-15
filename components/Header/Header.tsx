@@ -110,7 +110,7 @@ export const Header = () => {
             image="/static/images/icons/basket.svg"
             size="normal"
           >
-            <Badge value={productsCount} />
+            {productsCount > 0 && <Badge value={productsCount} />}
           </Avatar>
         </Box>
         {user && (

@@ -14,12 +14,14 @@ import {
   clearBasketAnonymously,
   getBasketAnonymously,
   removeInBasketAnonymously,
+  updateInBasketAnonymously,
 } from 'lib/anonymousBasket';
 
 interface BasketContext {
   basket: Basket | null;
   addProduct: (productId: number, quantity: number) => void;
-  removeProduct: (productId: number, quantity: number) => void;
+  removeProduct: (productId: number) => void;
+  updateProduct: (productId: number, quantity: number) => void;
   clear: () => void;
   refresh: () => void;
 }
@@ -27,6 +29,7 @@ export const context = createContext<BasketContext>({
   basket: null,
   addProduct() {},
   removeProduct() {},
+  updateProduct() {},
   clear() {},
   refresh() {},
 });
@@ -101,8 +104,8 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
       }, []);
 
     const basket = {
-      id: productsInBasket[0].id,
-      status: productsInBasket[0].status,
+      id: productsInBasket[0] && productsInBasket[0].id,
+      status: productsInBasket[0] && productsInBasket[0].status,
       total: products.reduce(
         (prev, { price, quantity }) => prev + price * quantity,
         0
@@ -132,10 +135,31 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
     [fetchCurrentBasket, user]
   );
   const removeProduct: BasketContext['removeProduct'] = useCallback(
-    (id, count) => {
-      if (!user) return removeInBasketAnonymously(id, count);
+    async (id) => {
+      if (user) {
+        await supabase.rpc('remove_products_from_basket', {
+          product_id: id,
+        });
+      } else {
+        removeInBasketAnonymously(id);
+      }
+      fetchCurrentBasket();
     },
-    [user]
+    [fetchCurrentBasket, user]
+  );
+  const updateProduct: BasketContext['updateProduct'] = useCallback(
+    async (id, quantity) => {
+      if (user) {
+        await supabase.rpc('update_product_from_basket', {
+          product_id: id,
+          new_quantity: quantity,
+        });
+      } else {
+        updateInBasketAnonymously(id, quantity);
+      }
+      fetchCurrentBasket();
+    },
+    [fetchCurrentBasket, user]
   );
   const clear: BasketContext['clear'] = useCallback(() => {
     if (!user) return clearBasketAnonymously();
@@ -144,7 +168,14 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
 
   return (
     <context.Provider
-      value={{ basket, addProduct, removeProduct, clear, refresh }}
+      value={{
+        basket,
+        addProduct,
+        removeProduct,
+        updateProduct,
+        clear,
+        refresh,
+      }}
     >
       {children}
     </context.Provider>

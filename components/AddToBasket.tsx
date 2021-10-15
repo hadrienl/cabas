@@ -8,17 +8,8 @@ import Text from './Text';
 import { useTranslation } from 'lib/i18n';
 import useNumberFormat from 'lib/useNumberFormat';
 import { useBasket } from './BasketProvider';
+import { getSuffix } from 'lib/strings';
 
-const getSuffix = (unit: ProductUnit) => {
-  switch (unit) {
-    case ProductUnit.Kg:
-      return ' kg';
-    case ProductUnit.Liter:
-      return ' l';
-    default:
-      return '';
-  }
-};
 interface AddToBasketProps extends Pick<Product, 'id'>, ProductInDistribution {}
 export const AddToBasket: FC<AddToBasketProps> = ({
   id,

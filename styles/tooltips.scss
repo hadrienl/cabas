@@ -1,0 +1,17 @@
+.warning-tooltip {
+  &.p-tooltip .p-tooltip-arrow {
+    border-top-color: var(--orange-500);
+  }
+  &.p-tooltip .p-tooltip-text {
+    background-color: var(--orange-500);
+  }
+}
+
+.danger-tooltip {
+  &.p-tooltip .p-tooltip-arrow {
+    border-top-color: var(--pink-500);
+  }
+  &.p-tooltip .p-tooltip-text {
+    background-color: var(--pink-500);
+  }
+}

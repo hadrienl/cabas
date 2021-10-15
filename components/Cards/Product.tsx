@@ -27,7 +27,6 @@ export const ProductCard: FC<ProductCardProps> = ({
   ...props
 }) => {
   const { t } = useTranslation();
-
   return (
     <CardContainer>
       <Text

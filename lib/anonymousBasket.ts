@@ -19,7 +19,6 @@ const setProducts = (products: SavedProduct[]) => {
 };
 export const getBasketAnonymously = async (): Promise<Basket> => {
   const savedProducts = getProducts();
-  console.log(savedProducts);
   const { data: productsData } = await supabase
     .from<
       ProductInDistribution & {
@@ -77,16 +76,22 @@ export const addInBasketAnonymously = async (id: number, count: number) => {
   });
   setProducts(products);
 };
-export const removeInBasketAnonymously = async (id: number, count: number) => {
+export const removeInBasketAnonymously = async (id: number) => {
   const products = getProducts();
   const found = products.find(({ id: pid }) => pid === id);
   if (!found) return;
-  found.count = Math.max(0, found.count - count);
-  if (found.count === 0) {
-    setProducts(products.filter(({ id }) => id !== found.id));
-    return;
-  }
-  setProducts([...products]);
+
+  setProducts(products.filter(({ id }) => id !== found.id));
+};
+
+export const updateInBasketAnonymously = async (
+  id: number,
+  quantity: number
+) => {
+  const newProducts = getProducts().map((product) =>
+    id === product.id ? { ...product, count: quantity } : product
+  );
+  setProducts(newProducts);
 };
 export const clearBasketAnonymously = () => {
   localStorage.removeItem(LS_BASKET_KEY);
