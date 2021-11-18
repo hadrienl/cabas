@@ -26,9 +26,10 @@ export const AddToBasket: FC<AddToBasketProps> = ({
   const add = useCallback(() => {
     addProduct(id, count);
     setAdded(true);
+    setCount(1);
   }, [addProduct, count, id]);
   useEffect(() => {
-    const timeout = setTimeout(() => setAdded(false));
+    const timeout = setTimeout(() => setAdded(false), 2000);
     return () => {
       clearTimeout(timeout);
     };
@@ -76,12 +77,15 @@ export const AddToBasket: FC<AddToBasketProps> = ({
         />
       </Box>
       <Button type="button" onClick={add}>
-        {!added && (
-          <Text justifyContent="center" flex="1">
-            {t('product.addToBasket.label')}
-          </Text>
-        )}
-        {added && 'Pwet'}
+        <Text justifyContent="center" flex="1">
+          {!added && t('product.addToBasket.label')}
+          {added && (
+            <>
+              {t('product.addToBasket.label', { context: 'added' })}
+              <Box className="pi pi-thumbs-up" ml={2} />
+            </>
+          )}
+        </Text>
       </Button>
     </Box>
   );

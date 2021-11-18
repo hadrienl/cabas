@@ -106,7 +106,8 @@
     "title": "Produits",
     "addToBasket": {
       "totalPrice": "= {{price}}",
-      "label": "Ajouter au panier"
+      "label": "Ajouter au panier",
+      "label_added": "Ajouté au panier"
     },
     "distributed": {
       "future": "Sera distribué à partir du {{startAt}}.",
