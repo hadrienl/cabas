@@ -24,6 +24,7 @@ interface BasketContext {
   updateProduct: (productId: number, quantity: number) => void;
   clear: () => void;
   refresh: () => void;
+  submit: () => Promise<any>;
 }
 export const context = createContext<BasketContext>({
   basket: null,
@@ -32,6 +33,7 @@ export const context = createContext<BasketContext>({
   updateProduct() {},
   clear() {},
   refresh() {},
+  async submit() {},
 });
 
 export const useBasket = () => useContext(context);
@@ -191,6 +193,12 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
   }, [user]);
   const refresh: BasketContext['refresh'] = useCallback(() => {}, []);
 
+  const submit: BasketContext['submit'] = useCallback(async () => {
+    if (!user) return;
+    const orderId = await supabase.rpc('submit_current_basket');
+    console.log('submit', orderId);
+  }, [user]);
+
   return (
     <context.Provider
       value={{
@@ -200,6 +208,7 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
         updateProduct,
         clear,
         refresh,
+        submit,
       }}
     >
       {children}

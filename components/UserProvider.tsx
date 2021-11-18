@@ -13,7 +13,7 @@ import { Customer } from 'types/Entities';
 
 export interface UserContext {
   user?: (User & { new_email?: string }) | null;
-  customer?: Customer;
+  customer?: Customer | null;
   signout: () => void;
   updateUser: (userData: Partial<User>) => void;
   updateProfile: (customerData: Partial<Customer>) => void;
@@ -73,6 +73,7 @@ export const UserProvider: FC = ({ children }) => {
 
   const signout = useCallback(() => {
     setUser(null);
+    setCustomer(null);
     supabase.auth.signOut();
   }, []);
 

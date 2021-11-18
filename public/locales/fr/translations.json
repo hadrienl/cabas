@@ -71,7 +71,10 @@
     "signout": "Déconnexion"
   },
   "basket": {
-    "title": "Votre panier"
+    "title": "Votre panier",
+    "empty": "Votre panier est vide :(",
+    "submit": "Passer la commande",
+    "submit_signup": "Veuillez créer un compte pour valider votre commande"
   },
   "validators": {
     "required": "Veuillez indiquer une valeur",
