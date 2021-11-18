@@ -6,7 +6,6 @@ import Main from 'components/Main';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
 import { useEffect } from 'react';
-import Loading from 'views/Common/Loading';
 import ProductsInBasket from './ProductsInBasket';
 
 export const Basket = () => {
@@ -40,7 +39,7 @@ export const Basket = () => {
           <Text>Votre panier est vide :(</Text>
         </Box>
       )}
-      {hasProduct < 0 && <Loading />}
+      {hasProduct < 0 && <div>Wait for it</div>}
     </Main>
   );
 };

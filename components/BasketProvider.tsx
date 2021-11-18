@@ -47,6 +47,7 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
       setBasket(await getBasketAnonymously());
       return;
     }
+
     const { data: productsInBasket } = await supabase
       .from<{
         id: number;
@@ -66,7 +67,31 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
       }>('current_basket')
       .select('*');
 
-    if (!productsInBasket) return;
+    const { products: savedProducts = [] } = await getBasketAnonymously();
+    clearBasketAnonymously();
+
+    if (!productsInBasket || productsInBasket.length === 0) {
+      /**
+       * If local basket exists, save it
+       */
+      if (savedProducts.length === 0) {
+        setBasket({
+          status: 0,
+          total: 0,
+          products: [],
+        });
+        return;
+      }
+
+      for (const { id, quantity } of savedProducts) {
+        await supabase.rpc('add_product_to_basket', {
+          product_id: id,
+          quantity,
+        });
+      }
+      fetchCurrentBasket();
+      return;
+    }
     const products = productsInBasket
       .map(
         ({

@@ -15,7 +15,6 @@ interface ProductsInBasketProps {
 export const ProductsInBasket: React.FC<ProductsInBasketProps> = ({
   products,
 }) => {
-  console.log(supabase);
   const { removeProduct, updateProduct } = useBasket();
   const updateQuantity = React.useCallback(
     (id: number) =>

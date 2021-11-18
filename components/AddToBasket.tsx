@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
@@ -22,9 +22,17 @@ export const AddToBasket: FC<AddToBasketProps> = ({
   const { addProduct } = useBasket();
   const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
+  const [added, setAdded] = useState(true);
   const add = useCallback(() => {
     addProduct(id, count);
+    setAdded(true);
   }, [addProduct, count, id]);
+  useEffect(() => {
+    const timeout = setTimeout(() => setAdded(false));
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [added]);
   const total = count * price;
   const suffix = getSuffix(unit);
 
@@ -68,9 +76,12 @@ export const AddToBasket: FC<AddToBasketProps> = ({
         />
       </Box>
       <Button type="button" onClick={add}>
-        <Text justifyContent="center" flex="1">
-          {t('product.addToBasket.label')}
-        </Text>
+        {!added && (
+          <Text justifyContent="center" flex="1">
+            {t('product.addToBasket.label')}
+          </Text>
+        )}
+        {added && 'Pwet'}
       </Button>
     </Box>
   );
