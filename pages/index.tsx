@@ -43,7 +43,9 @@ export const getStaticProps: GetStaticProps<HomeViewProps> = async () => {
       producerId: producer_id,
       producerName: producer_name,
       producerDescription: producer_description,
-      producerPhoto: producer_photo`
+      producerPhoto: producer_photo,
+      tagName: tag_name,
+      tagSlug: tag_slug`
     );
 
   return {

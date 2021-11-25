@@ -27,6 +27,7 @@ export const ProductCard: FC<ProductCardProps> = ({
   ...props
 }) => {
   const { t } = useTranslation();
+
   return (
     <CardContainer>
       <Text
@@ -36,7 +37,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         mb={producer ? 1 : 2}
       >
         <Link href={link}>{name}</Link>
-        {tagName && <Link href={`/tag/${tagSlug}`}>{tagName}</Link>}
+        {tagName && <Link href={`/tags/${tagSlug}`}>{tagName}</Link>}
       </Text>
       {producer && (
         <Link

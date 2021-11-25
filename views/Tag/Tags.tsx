@@ -27,7 +27,7 @@ export const TagsView: FC<TagsViewProps> = ({ tags }) => {
       <Box my={4} as="ul">
         {tags.map(({ slug, name }) => (
           <Box key={slug} as="li">
-            <Link href={`/tag/${slug}`}>{name}</Link>
+            <Link href={`/tags/${slug}`}>{name}</Link>
           </Box>
         ))}
       </Box>
