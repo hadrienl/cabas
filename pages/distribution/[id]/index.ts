@@ -8,12 +8,9 @@ import { getDistributionTimeRange } from 'lib/dates';
 export { default } from 'views/Distribution/Distribution';
 
 export async function getStaticPaths() {
-  const { data: distributions } = await supabase
-    .from<Distribution>('distribution')
-    .select('id');
   return {
-    paths: (distributions || []).map(({ id }) => `/distribution/${id}`),
-    fallback: false,
+    paths: [],
+    fallback: true,
   };
 }
 

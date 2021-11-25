@@ -104,7 +104,7 @@ export const getStaticProps: GetStaticProps<
         },
       };
     }
-    console.log(product);
+
     return {
       props: {
         distribution,

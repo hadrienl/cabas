@@ -7,14 +7,16 @@ import { getDistributionTimeRange } from 'lib/dates';
 import { useTranslation } from 'lib/i18n';
 import { Button } from 'primereact/button';
 import { Distribution } from 'types/Entities';
+import { useRouter } from 'next/router';
 
 export interface DistributionViewProps {
   distribution: Distribution;
 }
 export const DistributionView: FC<DistributionViewProps> = ({
-  distribution,
+  distribution = {} as Distribution,
 }) => {
   const { t } = useTranslation();
+  const { isFallback } = useRouter();
   const state = getDistributionTimeRange(
     distribution.startAt,
     distribution.closeAt
