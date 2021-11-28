@@ -4,14 +4,21 @@ CREATE POLICY "Customer"
   FOR ALL
   USING (auth.uid() = id);
 
-DROP POLICY IF EXISTS "Read Order" ON order;
+DROP POLICY IF EXISTS "Read Order" ON indent;
 CREATE POLICY "Read Order"
-  ON order
+  ON indent
   FOR select
   USING (auth.uid() = fk_customer);
 
-DROP POLICY IF EXISTS "Write Order" ON order;
+DROP POLICY IF EXISTS "Write Order" ON indent;
 CREATE POLICY "Write Order"
-  ON order
+  ON indent
   FOR insert
+  WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Update Order" ON indent;
+CREATE POLICY "Update Order"
+  ON indent
+  FOR update
+  USING (auth.uid() = fk_customer and status = 'pending')
   WITH CHECK (auth.role() = 'authenticated');

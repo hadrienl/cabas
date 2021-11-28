@@ -162,17 +162,14 @@ end;
 $$;
 
 drop function if exists submit_basket cascade;
-create function submit_basket()
+create function submit_basket(basket_id int8)
 returns boolean
 language plpgsql
 security definer
 set search_path = public
 as $$
-declare
-  b_id int8;
 begin
-  select id
-  into b_id
-  from current_basket;
+  update indent set status = 'submitted' where indent.id = basket_id;
+  return true;
 end;
 $$;

@@ -16,6 +16,7 @@ import {
   removeInBasketAnonymously,
   updateInBasketAnonymously,
 } from 'lib/anonymousBasket';
+import api from 'lib/api';
 
 interface BasketContext {
   basket: Basket | null;
@@ -196,8 +197,11 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
 
   const submit: BasketContext['submit'] = useCallback(async () => {
     if (!user || !basket) return;
-    const orderId = await supabase.from('current_basket').update({ status: 1 });
-    console.log('submit', orderId);
+    try {
+      const indent = await api.fetch('/api/basket/submit', { method: 'post' });
+      setBasket(null);
+      return indent;
+    } catch (e) {}
   }, [basket, user]);
 
   return (

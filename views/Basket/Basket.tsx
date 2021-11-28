@@ -31,8 +31,8 @@ export const Basket = () => {
         clearTimeout(timeout);
       };
     }
-    const orderId = await submit();
-    push('/account/orders');
+    const { id } = await submit();
+    push(`/account/orders/${id}`);
   }, [customer, needAccount, push, submit]);
 
   useEffect(() => {
