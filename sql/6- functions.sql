@@ -76,7 +76,7 @@ begin
   if (b_id is null)
   then
     insert into indent (fk_customer, fk_distribution, status)
-      values (auth.uid(), d_id, 0)
+      values (auth.uid(), d_id, 'pending')
       returning indent.id into b_id;
   end if;
   

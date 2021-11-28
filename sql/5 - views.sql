@@ -85,4 +85,4 @@ create view current_basket as
     left join product_in_distribution on product_in_distribution.id = product_in_indent.fk_product
     left join distribution on distribution.id = product_in_distribution.fk_distribution
     left join product on product.id = product_in_distribution.fk_product
-    where distribution.start_at < CURRENT_DATE and distribution.close_at > CURRENT_DATE and status = 0;
+    where distribution.start_at < CURRENT_DATE and distribution.close_at > CURRENT_DATE and status = 'pending';
