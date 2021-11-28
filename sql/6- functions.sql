@@ -36,13 +36,13 @@ security definer
 set search_path = public
 as $$
 begin
-  return query select basket.id as basket_id
-    from basket
-    left join product_in_basket on product_in_basket.fk_basket = basket.id
-    left join product_in_distribution on product_in_basket.fk_product = product_in_distribution.id
+  return query select indent.id as indent_id
+    from indent
+    left join product_in_indent on product_in_indent.fk_indent = indent.id
+    left join product_in_distribution on product_in_indent.fk_product = product_in_distribution.id
     left join distribution on product_in_distribution.fk_distribution = distribution.id
     where
-          basket.fk_customer = auth.uid()
+          indent.fk_customer = auth.uid()
       and distribution.start_at < CURRENT_DATE
       and distribution.close_at > CURRENT_DATE;
 end;
@@ -75,12 +75,12 @@ begin
 
   if (b_id is null)
   then
-    insert into basket (fk_customer, status)
-      values (auth.uid(), 0)
-      returning basket.id into b_id;
+    insert into indent (fk_customer, fk_distribution, status)
+      values (auth.uid(), d_id, 0)
+      returning indent.id into b_id;
   end if;
   
-  insert into product_in_basket (fk_basket, fk_product, unit_price, quantity)
+  insert into product_in_indent (fk_indent, fk_product, unit_price, quantity)
     values (b_id, product_id, d_price, quantity);
 
   return true;
@@ -115,10 +115,10 @@ begin
   then
     return false;
   end if;
-  update product_in_basket
+  update product_in_indent
     set quantity = new_quantity
     where fk_product = product_id
-      and fk_basket = b_id;
+      and fk_indent = b_id;
 
   return true;
 end;
@@ -153,10 +153,26 @@ begin
     return false;
   end if;
   
-  delete from product_in_basket
-    where product_in_basket.fk_product = product_id
-      and product_in_basket.fk_basket = b_id;
+  delete from product_in_indent
+    where product_in_indent.fk_product = product_id
+      and product_in_indent.fk_indent = b_id;
 
   return true;
+end;
+$$;
+
+drop function if exists submit_basket cascade;
+create function submit_basket()
+returns boolean
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  b_id int8;
+begin
+  select id
+  into b_id
+  from current_basket;
 end;
 $$;

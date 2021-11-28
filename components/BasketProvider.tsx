@@ -56,6 +56,7 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
         status: BasketStatus;
         quantity: number;
         total: number;
+        fk_distribution: number;
         id_in_distribution: number;
         unit: ProductUnit;
         unit_label: string;
@@ -194,10 +195,10 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
   const refresh: BasketContext['refresh'] = useCallback(() => {}, []);
 
   const submit: BasketContext['submit'] = useCallback(async () => {
-    if (!user) return;
-    const orderId = await supabase.rpc('submit_current_basket');
+    if (!user || !basket) return;
+    const orderId = await supabase.from('current_basket').update({ status: 1 });
     console.log('submit', orderId);
-  }, [user]);
+  }, [basket, user]);
 
   return (
     <context.Provider
