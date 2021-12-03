@@ -43,6 +43,7 @@ begin
     left join distribution on product_in_distribution.fk_distribution = distribution.id
     where
           indent.fk_customer = auth.uid()
+      and indent.status = 'pending'
       and distribution.start_at < CURRENT_DATE
       and distribution.close_at > CURRENT_DATE;
 end;
@@ -169,7 +170,11 @@ security definer
 set search_path = public
 as $$
 begin
-  update indent set status = 'submitted' where indent.id = basket_id;
+  update indent
+    set status = 'submitted'
+    where
+        indent.id = basket_id
+      and indent.fk_customer = auth.uid();
   return true;
 end;
 $$;

@@ -198,9 +198,9 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
   const submit: BasketContext['submit'] = useCallback(async () => {
     if (!user || !basket) return;
     try {
-      const indent = await api.fetch('/api/basket/submit', { method: 'post' });
+      await supabase.rpc('submit_basket', { basket_id: basket.id });
       setBasket(null);
-      return indent;
+      return basket;
     } catch (e) {}
   }, [basket, user]);
 

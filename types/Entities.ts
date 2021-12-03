@@ -65,6 +65,7 @@ export enum BasketStatus {
   Shipped = 4,
 }
 export interface Basket {
+  id?: number;
   status: BasketStatus;
   total: number;
   products?: (ProductBase & ProductInDistribution & ProductInBasket)[];
