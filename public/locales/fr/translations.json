@@ -68,7 +68,22 @@
         "different": "Les deux mots de passe doivent être identiques"
       }
     },
-    "signout": "Déconnexion"
+    "signout": "Déconnexion",
+    "orders": {
+      "title": "Commandes"
+    },
+    "order": {
+      "title": "Commande passée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_paid": "Commande payée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_valid": "Commande validée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_shipped": "Commande livrée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_short": "{{date, formatDate, dd MMMM yyyy }}",
+      "status_submitted": "En attente de paiement",
+      "status_paid": "Payée",
+      "status_valid": "Validée",
+      "status_shipped": "Livrée",
+      "payment": "Votre commande est en attente de paiement."
+    }
   },
   "basket": {
     "title": "Votre panier",

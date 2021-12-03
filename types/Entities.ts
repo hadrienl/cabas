@@ -57,18 +57,24 @@ export interface ProductInBasket {
   quantity: number;
 }
 
-export enum BasketStatus {
-  Pending = 0,
-  Submitted = 1,
-  Paid = 2,
-  Validated = 3,
-  Shipped = 4,
-}
-export interface Basket {
+export type OrderStatus =
+  | 'pending'
+  | 'submitted'
+  | 'paid'
+  | 'valid'
+  | 'shipped';
+
+export interface OrderBase {
   id?: number;
-  status: BasketStatus;
+  status: OrderStatus;
   total: number;
+  updatedAt?: string;
+}
+export interface Order extends OrderBase {
   products?: (ProductBase & ProductInDistribution & ProductInBasket)[];
+}
+export interface Basket extends Order {
+  status: 'pending';
 }
 
 export interface DistributedProduct {

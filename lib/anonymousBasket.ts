@@ -55,7 +55,7 @@ export const getBasketAnonymously = async (): Promise<Basket> => {
 
   return {
     products,
-    status: 0,
+    status: 'pending',
     total: products.reduce(
       (prev, { price, quantity }) => prev + price * quantity,
       0

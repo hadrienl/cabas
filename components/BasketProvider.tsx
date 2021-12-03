@@ -7,7 +7,7 @@ import {
   useState,
 } from 'react';
 import supabase from 'lib/supabase';
-import { Basket, BasketStatus, ProductUnit } from 'types/Entities';
+import { Basket, ProductUnit } from 'types/Entities';
 import { useUser } from './UserProvider';
 import {
   addInBasketAnonymously,
@@ -54,7 +54,7 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
     const { data: productsInBasket } = await supabase
       .from<{
         id: number;
-        status: BasketStatus;
+        status: 'pending';
         quantity: number;
         total: number;
         fk_distribution: number;
@@ -80,7 +80,7 @@ export const BasketProvider: FC<BasketProviderProps> = ({ children }) => {
        */
       if (savedProducts.length === 0) {
         setBasket({
-          status: 0,
+          status: 'pending',
           total: 0,
           products: [],
         });

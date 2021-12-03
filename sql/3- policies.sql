@@ -22,3 +22,9 @@ CREATE POLICY "Update Order"
   FOR update
   USING (auth.uid() = fk_customer and status = 'pending')
   WITH CHECK (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Read Order products" ON product_in_indent;
+CREATE POLICY "Read Order products"
+  ON product_in_indent
+  FOR all
+  USING (fk_indent in (select id from indent where fk_customer = auth.uid()));

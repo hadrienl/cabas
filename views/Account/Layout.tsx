@@ -36,13 +36,7 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
 
   useEffect(() => {
     if (!user) return;
-    setBreadcrumbs([
-      {
-        label: t('account.title'),
-        url: '/account',
-      },
-      ...breadcrumbs,
-    ]);
+    setBreadcrumbs(breadcrumbs);
   }, [breadcrumbs, setBreadcrumbs, t, user]);
 
   useEffect(() => {
@@ -74,6 +68,10 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
           >
             <Box className="pi pi-lock" mr={3} />
             <Text py={3}>{t('account.password.title')}</Text>
+          </Link>
+          <Link href="/account/orders" flexDirection="row" alignItems="center">
+            <Box className="pi pi-shopping-bag" mr={3} />
+            <Text py={3}>{t('account.orders.title')}</Text>
           </Link>
           <Text
             onClick={signOut}

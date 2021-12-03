@@ -86,3 +86,27 @@ create view current_basket as
     left join distribution on distribution.id = product_in_distribution.fk_distribution
     left join product on product.id = product_in_distribution.fk_product
     where distribution.start_at < CURRENT_DATE and distribution.close_at > CURRENT_DATE and status = 'pending';
+
+drop view if exists orders cascade;
+create view orders as
+  select
+      indent.*,
+      product_in_indent.unit_price,
+      product_in_indent.quantity,
+      product_in_distribution.id as id_in_distribution,
+      product_in_distribution.unit_label,
+      product_in_distribution.unit,
+      product_in_distribution.per_unit,
+      product_in_distribution.price,
+      product.id as product_id,
+      product.name as product_name,
+      product.description as product_description,
+      product.photo as product_photo,
+      distribution.start_at,
+      distribution.close_at
+    from indent
+    left join product_in_indent on product_in_indent.fk_indent = indent.id
+    left join product_in_distribution on product_in_distribution.id = product_in_indent.fk_product
+    left join distribution on distribution.id = product_in_distribution.fk_distribution
+    left join product on product.id = product_in_distribution.fk_product
+    where status != 'pending';
