@@ -4,13 +4,7 @@ import slug from 'slug';
 import { Link as ILink, useHeader } from 'components/Header/HeaderProvider';
 import Main from 'components/Main';
 import { useTranslation } from 'lib/i18n';
-import {
-  DistributedProduct,
-  Distribution,
-  Producer,
-  Product,
-  ProductInDistribution,
-} from 'types/Entities';
+import { DistributedProduct, Distribution, Producer } from 'types/Entities';
 import Loading from 'views/Common/Loading';
 import Box from 'components/Box';
 import Text from 'components/Text';
@@ -33,8 +27,6 @@ export const ProductInDistributionView: FC<ProductInDistributionViewProps> = ({
   product,
 }) => {
   const { t } = useTranslation();
-  const dateFormat = useDateFormat();
-  const numberFormat = useNumberFormat();
   const { setBreadcrumbs } = useHeader();
   const distributionRange = getDistributionTimeRange(
     distribution.startAt,
@@ -97,33 +89,7 @@ export const ProductInDistributionView: FC<ProductInDistributionViewProps> = ({
         )}
         <Box ml={product.photo ? 2 : 0} flex="1">
           <Markdown flex="1">{product.description}</Markdown>
-          {distributionRange === 'current' && <AddToBasket {...product} />}
-          {distributionRange !== 'current' && (
-            <>
-              <Text fontSize={4}>
-                {t('distributions.product.price', {
-                  price: numberFormat(product.price, {
-                    style: 'currency',
-                    currency: 'EUR',
-                  }),
-                  context: `${product.unit}`,
-                })}
-              </Text>
-              <Text>
-                {t(`product.distributed.${distributionRange}`, {
-                  startAt: dateFormat(distribution.startAt, {
-                    dateStyle: 'full',
-                  }),
-                  closeAt: dateFormat(distribution.closeAt, {
-                    dateStyle: 'full',
-                  }),
-                })}
-              </Text>
-              {/*<Text>
-                Me le rapeller (TODO : mettre un bouton d'inscription à la NL)
-              </Text>*/}
-            </>
-          )}
+          <AddToBasket {...product} id={product.idInDistribution} />
         </Box>
       </Box>
     </Main>
