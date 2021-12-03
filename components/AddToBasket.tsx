@@ -22,7 +22,7 @@ export const AddToBasket: FC<AddToBasketProps> = ({
   const { addProduct } = useBasket();
   const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
-  const [added, setAdded] = useState(true);
+  const [added, setAdded] = useState(false);
   const add = useCallback(() => {
     addProduct(id, count);
     setAdded(true);
