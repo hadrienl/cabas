@@ -65,6 +65,7 @@ export const OrdersView: FC<OrderProps> = (props) => {
         total,
         updatedAt: updated_at`
       )
+      .neq('status', 'pending')
       .order('updated_at', { ascending: false });
 
     if (!orders) {
