@@ -70,8 +70,12 @@ export interface OrderBase {
   total: number;
   updatedAt?: string;
 }
+
+export type OrderProduct = ProductBase &
+  ProductInDistribution &
+  ProductInBasket;
 export interface Order extends OrderBase {
-  products?: (ProductBase & ProductInDistribution & ProductInBasket)[];
+  products?: OrderProduct[];
 }
 export interface Basket extends Order {
   status: 'pending';

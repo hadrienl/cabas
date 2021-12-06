@@ -34,3 +34,15 @@ CREATE POLICY "Read Order products"
   ON product_in_indent
   FOR all
   USING (fk_indent in (select id from indent where fk_customer = auth.uid()));
+
+-- Admin
+DROP POLICY IF EXISTS "Admin Customer" ON customer;
+CREATE POLICY "Admin Customer"
+  ON customer
+  FOR ALL
+  USING (exists(select access ->> 'orders' from user_access where id = auth.uid()));
+DROP POLICY IF EXISTS "Admin Orders" ON indent;
+CREATE POLICY "Admin Orders"
+  ON indent
+  FOR all
+  USING (exists(select access ->> 'orders' from user_access where id = auth.uid()));

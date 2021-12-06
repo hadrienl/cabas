@@ -78,14 +78,20 @@
       "title_valid": "Commande validée le {{date, formatDate, dd MMMM yyyy }}",
       "title_shipped": "Commande livrée le {{date, formatDate, dd MMMM yyyy }}",
       "title_short": "{{date, formatDate, dd MMMM yyyy }}",
-      "status_submitted": "En attente de paiement",
-      "status_paid": "Payée",
-      "status_valid": "Validée",
-      "status_shipped": "Livrée",
+      "status_submitted": "$t(order.status_submitted)",
+      "status_paid": "$t(order.status_paid)",
+      "status_valid": "$t(order.status_valid)",
+      "status_shipped": "$t(order.status_shipped)",
       "payment": "Votre commande est en attente de paiement.",
       "pay_cb": "Payer par Carte bancaire",
       "charges": "Frais de traitement de la commande"
     }
+  },
+  "order": {
+    "status_submitted": "En attente de paiement",
+    "status_paid": "Payée",
+    "status_valid": "Validée",
+    "status_shipped": "Livrée"
   },
   "basket": {
     "title": "Votre panier",
@@ -139,6 +145,14 @@
     "price_3": "{{price}} au litre"
   },
   "admin": {
-    "title": "Accès Administrateur"
+    "title": "Accès Administrateur",
+    "orders": {
+      "title": "Gestion des commandes",
+      "currentDistribution": "Distribution en cours du {{startAt, formatDate, dd MMMM yyyy}} au {{closeAt, formatDate, dd MMMM yyyy}}",
+      "status_submitted": "1 - $t(order.status_submitted)",
+      "status_paid": "2 - $t(order.status_paid)",
+      "status_valid": "3 - $t(order.status_valid)",
+      "status_shipped": "4 - $t(order.status_shipped)"
+    }
   }
 }
