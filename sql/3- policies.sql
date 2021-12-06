@@ -4,6 +4,12 @@ CREATE POLICY "Customer"
   FOR ALL
   USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "user_access" ON user_access;
+CREATE POLICY "user_access"
+  ON user_access
+  for select
+  using (auth.uid() = id);
+
 DROP POLICY IF EXISTS "Read Order" ON indent;
 CREATE POLICY "Read Order"
   ON indent

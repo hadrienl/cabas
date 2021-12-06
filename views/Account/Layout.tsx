@@ -1,5 +1,6 @@
-import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
+import { FC, MouseEvent, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { Divider } from 'primereact/divider';
 
 import Box from 'components/Box';
 import Text from 'components/Text';
@@ -21,9 +22,13 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
   breadcrumbs = EMPTY_ARRAY,
 }) => {
   const { t } = useTranslation();
-  const { user, signout } = useUser();
+  const { user, signout, fetchAccess, access } = useUser();
   const { push } = useRouter();
   const { setBreadcrumbs } = useHeader();
+
+  useEffect(() => {
+    fetchAccess();
+  }, [fetchAccess, user]);
 
   const signOut = useCallback(
     async (e: MouseEvent<HTMLAnchorElement>) => {
@@ -46,6 +51,8 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
   }, [setBreadcrumbs]);
 
   if (!user) return null;
+
+  const adminAccess = Object.keys(access).length > 0;
 
   return (
     <Main padding={0}>
@@ -73,6 +80,16 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
             <Box className="pi pi-shopping-bag" mr={3} />
             <Text py={3}>{t('account.orders.title')}</Text>
           </Link>
+          {adminAccess && (
+            <>
+              <Divider />
+              <Link href="/admin" flexDirection="row" alignItems="center">
+                <Box className="pi pi-cog" mr={3} />
+                <Text py={3}>{t('admin.title')}</Text>
+              </Link>
+              <Divider />
+            </>
+          )}
           <Text
             onClick={signOut}
             py={3}

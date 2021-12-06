@@ -17,12 +17,16 @@ export interface UserContext {
   signout: () => void;
   updateUser: (userData: Partial<User>) => void;
   updateProfile: (customerData: Partial<Customer>) => void;
+  fetchAccess: () => void;
+  access: Record<string, Record<string, boolean>>;
 }
 
 export const context = createContext<UserContext>({
   signout: () => {},
   updateUser: () => {},
   updateProfile: () => {},
+  fetchAccess: () => {},
+  access: {},
 });
 
 export const useUser = () => useContext(context);
@@ -30,6 +34,7 @@ export const useUser = () => useContext(context);
 export const UserProvider: FC = ({ children }) => {
   const [user, setUser] = useState<UserContext['user']>();
   const [customer, setCustomer] = useState<UserContext['customer']>();
+  const [access, setAccess] = useState<UserContext['access']>({});
 
   const fetchUser = useCallback(async () => {
     const user = supabase.auth.user();
@@ -54,6 +59,12 @@ export const UserProvider: FC = ({ children }) => {
       setUser(null);
     }
     setCustomer(data || undefined);
+  }, []);
+
+  const fetchAccess = useCallback(async () => {
+    const { data } = await supabase.from('user_access').select('*').single();
+    if (!data) return;
+    setAccess(data.access);
   }, []);
 
   useEffect(() => {
@@ -103,7 +114,15 @@ export const UserProvider: FC = ({ children }) => {
 
   return (
     <context.Provider
-      value={{ user, customer, signout, updateUser, updateProfile }}
+      value={{
+        user,
+        customer,
+        signout,
+        updateUser,
+        updateProfile,
+        fetchAccess,
+        access,
+      }}
     >
       {children}
     </context.Provider>

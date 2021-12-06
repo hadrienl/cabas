@@ -137,5 +137,8 @@
     "price": "{{price}}",
     "price_2": "{{price}} le Kg",
     "price_3": "{{price}} au litre"
+  },
+  "admin": {
+    "title": "Accès Administrateur"
   }
 }
