@@ -1,50 +1,47 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, useEffect } from 'react';
+import slug from 'slug';
 
 import Main from 'components/Main';
 import Text from 'components/Text';
-import { Product, ProductWithDistributions, Tag } from 'types/Entities';
+import { DistributedProductWithProducer, Tag } from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
 import Cards from 'components/Cards/Cards';
 import ProductCard from 'components/Cards/Product';
 import { useHeader } from 'components/Header/HeaderProvider';
-import { getDistributionTimeRange } from 'lib/dates';
 
 export interface TagViewProps {
   tag: Tag;
-  products: ProductWithDistributions[];
+  products: DistributedProductWithProducer[];
 }
 
-export const TagView: FC<TagViewProps> = ({
-  tag: { name: tag, slug },
-  products,
-}) => {
+export const TagView: FC<TagViewProps> = ({ tag, products = [] }) => {
   const { t } = useTranslation();
   const { setBreadcrumbs } = useHeader();
   useEffect(() => {
     setBreadcrumbs([
-      { url: '/tag', label: t('tag.title') },
+      { url: '/tags', label: t('tag.title') },
       {
-        url: `/tag/${slug}`,
-        label: tag,
+        url: `/tag/${tag.slug}`,
+        label: tag.name,
       },
     ]);
     return () => setBreadcrumbs(null);
-  }, [tag, slug, setBreadcrumbs, t]);
+  }, [tag, setBreadcrumbs, t]);
 
   return (
     <Main>
-      <Text as="h1">{t('tag.products.title', { tag })}</Text>
+      <Text as="h1">{t('tag.products.title', { tag: tag.name })}</Text>
       <Cards>
-        {products.map(({ distributions, ...product }) => {
-          const currentDistribution = distributions.find(
-            ({ startAt, closeAt }) =>
-              getDistributionTimeRange(startAt, closeAt) === 'current'
-          );
+        {products.map((product) => {
           return (
             <ProductCard
               key={product.id}
               {...product}
-              distributed={currentDistribution}
+              link={`/distribution/${product.distributionId}/${
+                product.producerId
+              }-${slug(product.producerName)}/${
+                product.idInDistribution
+              }-${slug(product.name)}`}
             />
           );
         })}

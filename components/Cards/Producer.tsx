@@ -11,16 +11,18 @@ import Link from 'components/Link';
 import Markdown from 'components/Markdown';
 
 interface ProducerCardProps
-  extends Pick<Producer, 'id' | 'name' | 'photo' | 'description'> {}
+  extends Pick<Producer, 'id' | 'name' | 'photo' | 'description'> {
+  link?: string;
+}
 
 export const ProducerCard: FC<ProducerCardProps> = ({
   id,
   name,
   photo,
   description,
+  link = `/producer/${id}-${slug(name)}`,
 }) => {
   const { t } = useTranslation();
-  const link = `/producer/${id}-${slug(name)}`;
   return (
     <CardContainer>
       <Text

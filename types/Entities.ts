@@ -1,9 +1,10 @@
-export interface User {
+export interface Customer {
   id: string;
+  email: string;
   firstName: string;
   lastName: string;
-  email: string;
-  picture: string;
+  photo: string;
+  phone: string;
 }
 
 export interface Tag {
@@ -43,14 +44,57 @@ export interface Distribution {
 }
 
 export interface ProductInDistribution {
+  pid?: number;
   unit: ProductUnit;
   unitLabel: string;
   perUnit: number;
   price: number;
 }
 
-export interface ProductWithDistributions extends ProductBase {
-  distributions: (Distribution & ProductInDistribution)[];
+export interface Product extends ProductBase, ProductInDistribution {}
+
+export interface ProductInBasket {
+  quantity: number;
 }
 
-export interface Product extends ProductBase, ProductInDistribution {}
+export type OrderStatus =
+  | 'pending'
+  | 'submitted'
+  | 'paid'
+  | 'valid'
+  | 'shipped';
+
+export interface OrderBase {
+  id?: number;
+  status: OrderStatus;
+  total: number;
+  updatedAt?: string;
+}
+export interface Order extends OrderBase {
+  products?: (ProductBase & ProductInDistribution & ProductInBasket)[];
+}
+export interface Basket extends Order {
+  status: 'pending';
+}
+
+export interface DistributedProduct {
+  id: number;
+  name: string;
+  description: string;
+  photo: string;
+  idInDistribution: number;
+  price: number;
+  unit: number;
+  unitLabel: string;
+  perUnit: number;
+  distributionId: number;
+  tagName: string;
+  tagSlug: string;
+}
+
+export interface DistributedProductWithProducer extends DistributedProduct {
+  producerId: number;
+  producerName: string;
+  producerDescription: string;
+  producerPhoto: string;
+}

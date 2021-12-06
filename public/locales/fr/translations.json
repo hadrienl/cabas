@@ -1,10 +1,18 @@
 {
+  "generic": {
+    "save": "Enregistrer",
+    "trash": {
+      "label": "Supprimer",
+      "label_confirm": "Supprimer pour de bon !"
+    }
+  },
   "title": "Le Cabas Liassois",
   "header": {
     "accountLink": "Votre compte",
     "basketLink": "Votre panier",
     "connectionLink": "Connexion",
-    "hello": "Bonjour, {{displayName}}"
+    "hello": "Bonjour",
+    "hello_withname": "Bonjour, {{displayName}}"
   },
   "signin": {
     "title": "Connexion",
@@ -33,6 +41,25 @@
   "account": {
     "title": "Votre compte",
     "welcome": "Bienvenue",
+    "profile": {
+      "title": "Informations personnelles",
+      "firstName": {
+        "label": "Prénom"
+      },
+      "lastName": {
+        "label": "Nom"
+      },
+      "email": {
+        "label": "Adresse e-mail",
+        "changed": "Pour valider le changement d'email, veuillez vérifier l'email qui vous y a été envoyé."
+      },
+      "photo": {
+        "label": "Photo de profil"
+      },
+      "phone": {
+        "label": "Numéro de téléphone"
+      }
+    },
     "password": {
       "title": "Changer votre mot de passe",
       "label": "Saisissez un nouveau mot de passe",
@@ -41,13 +68,28 @@
         "different": "Les deux mots de passe doivent être identiques"
       }
     },
-    "signout": "Déconnexion"
+    "signout": "Déconnexion",
+    "orders": {
+      "title": "Commandes"
+    },
+    "order": {
+      "title": "Commande passée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_paid": "Commande payée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_valid": "Commande validée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_shipped": "Commande livrée le {{date, formatDate, dd MMMM yyyy }}",
+      "title_short": "{{date, formatDate, dd MMMM yyyy }}",
+      "status_submitted": "En attente de paiement",
+      "status_paid": "Payée",
+      "status_valid": "Validée",
+      "status_shipped": "Livrée",
+      "payment": "Votre commande est en attente de paiement."
+    }
   },
   "basket": {
-    "title": "Votre panier"
-  },
-  "generic": {
-    "save": "Enregistrer"
+    "title": "Votre panier",
+    "empty": "Votre panier est vide :(",
+    "submit": "Passer la commande",
+    "submit_signup": "Veuillez créer un compte pour valider votre commande"
   },
   "validators": {
     "required": "Veuillez indiquer une valeur",
@@ -58,15 +100,14 @@
   },
   "distributions": {
     "current": "Distribution en cours",
+    "open": "Commandes ouvertes jusqu'au {{closeAt, full}}.",
+    "ship": "Livraison le {{shipAt, full}}.",
     "future": "Prochaine distribution",
     "future_plural": "Prochaines distributions",
-    "past": "Distribution passée",
-    "past_plural": "Distributions passées",
-    "startAt": "Démarre le {{date}}",
-    "closeAt": "Ferme le {{date}}",
-    "shipAt": "Livraison le {{date}}",
-    "producers": "Liste des producteurs",
-    "seeDetails": "Voir les détails"
+    "startAt": "Démarre le {{startAt, full}}",
+    "closeAt": "Ferme le {{closeAt, full}}",
+    "shipAt": "Livraison le {{shipAt, full}}",
+    "notify": "Je veux être prévenu !"
   },
   "tag": {
     "title": "Catégories",
@@ -83,7 +124,8 @@
     "title": "Produits",
     "addToBasket": {
       "totalPrice": "= {{price}}",
-      "label": "Ajouter au panier"
+      "label": "Ajouter au panier",
+      "label_added": "Ajouté au panier"
     },
     "distributed": {
       "future": "Sera distribué à partir du {{startAt}}.",

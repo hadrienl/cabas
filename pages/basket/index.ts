@@ -1,3 +1,1 @@
-import Basket from 'views/Basket';
-
-export default Basket;
+export { default } from 'views/Basket';

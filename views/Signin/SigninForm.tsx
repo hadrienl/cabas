@@ -42,6 +42,7 @@ export const SigninForm = () => {
 
     if (error) {
       setError(error.message);
+      return;
     }
     if (withEmail) {
       setEmailSent(true);

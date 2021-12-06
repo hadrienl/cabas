@@ -2,7 +2,7 @@ import { FC } from 'react';
 import slug from 'slug';
 
 import Box from 'components/Box';
-import { Product, ProductInDistribution, Distribution } from 'types/Entities';
+import { DistributedProduct, Producer } from 'types/Entities';
 import Text from 'components/Text';
 
 import { useTranslation } from 'lib/i18n';
@@ -10,20 +10,21 @@ import CardContainer from './CardContainer';
 import AddToBasket from 'components/AddToBasket';
 import Link from 'components/Link';
 
-interface ProductCardProps
-  extends Pick<Product, 'id' | 'name' | 'photo' | 'producer' | 'tag'> {
-  distributed?: ProductInDistribution & Distribution;
+interface ProductCardProps extends DistributedProduct {
+  producer?: Producer;
   link?: string;
 }
 
 export const ProductCard: FC<ProductCardProps> = ({
   id,
+  idInDistribution,
   name,
   photo,
   producer,
-  tag,
-  distributed,
+  tagName,
+  tagSlug,
   link = `/product/${id}-${slug(name)}`,
+  ...props
 }) => {
   const { t } = useTranslation();
 
@@ -36,7 +37,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         mb={producer ? 1 : 2}
       >
         <Link href={link}>{name}</Link>
-        {tag && <Link href={`/tag/${tag.slug}`}>{tag.name}</Link>}
+        {tagName && <Link href={`/tags/${tagSlug}`}>{tagName}</Link>}
       </Text>
       {producer && (
         <Link
@@ -59,7 +60,7 @@ export const ProductCard: FC<ProductCardProps> = ({
         {!photo && <Box height="200px" />}
       </Link>
       <Box flexDirection="row" justifyContent="space-between" mt={4}>
-        {distributed && <AddToBasket {...distributed} />}
+        {idInDistribution && <AddToBasket {...props} id={idInDistribution} />}
       </Box>
     </CardContainer>
   );

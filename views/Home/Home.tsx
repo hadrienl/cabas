@@ -1,95 +1,65 @@
-import { FC, useMemo } from 'react';
+import { FC, useCallback } from 'react';
+import { Button } from 'primereact/button';
 
 import Main from 'components/Main';
 import Text from 'components/Text';
-import { Distribution, Producer } from 'types/Entities';
+import { DistributedProductWithProducer, Distribution } from 'types/Entities';
 import { useTranslation } from 'lib/i18n';
+import CurrentDistribution from './CurrentDistribution';
 import Box from 'components/Box';
-import Cards from 'components/Cards/Cards';
-import ProducerCard from 'components/Cards/Producer';
-import Link from 'components/Link';
-import useDateFormat from 'lib/useDateFormat';
 
 export interface HomeViewProps {
-  distributions: (Distribution & {
-    producers: Producer[];
-  })[];
+  distribution: Distribution | null;
+  futureDistributions: Distribution[];
+  products: DistributedProductWithProducer[];
 }
-export const HomeView: FC<HomeViewProps> = ({ distributions }) => {
+export const HomeView: FC<HomeViewProps> = ({
+  distribution,
+  futureDistributions,
+  products,
+}) => {
   const { t } = useTranslation();
-  const dateFormat = useDateFormat();
 
-  const current = useMemo(() => {
-    const now = new Date();
-    return distributions.filter(
-      ({ startAt, closeAt }) =>
-        now > new Date(startAt) && now < new Date(closeAt)
-    );
-  }, [distributions]);
-  const next = useMemo(() => {
-    const now = new Date();
-    return distributions.filter(({ startAt }) => now < new Date(startAt));
-  }, [distributions]);
-  const past = useMemo(() => {
-    const now = new Date();
-    return distributions.filter(({ closeAt }) => now > new Date(closeAt));
-  }, [distributions]);
+  const notify = useCallback(
+    (distributionId: number) => () => {
+      console.log('TODO', distributionId);
+    },
+    []
+  );
 
   return (
     <Main>
       <Text as="h1" marginY={2}>
         {t('home.welcome')}
       </Text>
-      <Box>
-        {current.length > 0 && (
-          <Box>
-            <Text as="h2" marginY={2}>
-              {t('distributions.current')}
-            </Text>
-            <Cards>
-              {current[0].producers.map((producer) => (
-                <ProducerCard key={producer.id} {...producer} />
-              ))}
-            </Cards>
-          </Box>
-        )}
-        {next.length > 0 && (
-          <Box>
-            <Text as="h2" marginY={2}>
-              {t('distributions.future', { count: next.length })}
-            </Text>
-            <Box as="ul">
-              {next.map(({ id, startAt, closeAt, shipAt }) => (
-                <Box key={id} as="li">
-                  <Text as="p">
-                    {t('distributions.startAt', {
-                      date: dateFormat(startAt, { dateStyle: 'long' }),
-                    })}
-                    {` - `}
-                    {t('distributions.closeAt', {
-                      date: dateFormat(closeAt, { dateStyle: 'long' }),
-                    })}
-                    {` - `}
-                    {t('distributions.shipAt', {
-                      date: dateFormat(shipAt, { dateStyle: 'long' }),
-                    })}
-                  </Text>
-                  <Link href={`/distribution/${id}`}>
-                    {t('distributions.seeDetails')}
-                  </Link>
-                </Box>
-              ))}
+      {distribution && (
+        <CurrentDistribution {...distribution} products={products} />
+      )}
+      {futureDistributions.length > 0 && (
+        <Box>
+          <Text as="h2">
+            {t('distributions.future', { count: futureDistributions.length })}
+          </Text>
+          {futureDistributions.map((distribution) => (
+            <Box key={distribution.id}>
+              <Text>
+                {t('distributions.startAt', { startAt: distribution.startAt })}
+              </Text>
+              <Text>
+                {t('distributions.closeAt', { closeAt: distribution.closeAt })}
+              </Text>
+              <Text>
+                {t('distributions.shipAt', { shipAt: distribution.shipAt })}
+              </Text>
+              <Box alignSelf="flex-start">
+                <Button type="button" onClick={notify(distribution.id)}>
+                  <Text>{t('distributions.notify')}</Text>
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        )}
-        {past.length > 0 && (
-          <Box>
-            <Text as="h2" marginY={2}>
-              {t('distributions.past', { count: past.length })}
-            </Text>
-          </Box>
-        )}
-      </Box>
+          ))}
+        </Box>
+      )}
     </Main>
   );
 };

@@ -1,4 +1,4 @@
-import { FC, useCallback, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { InputNumber } from 'primereact/inputnumber';
 
@@ -7,17 +7,9 @@ import Box from './Box';
 import Text from './Text';
 import { useTranslation } from 'lib/i18n';
 import useNumberFormat from 'lib/useNumberFormat';
+import { useBasket } from './BasketProvider';
+import { getSuffix } from 'lib/strings';
 
-const getSuffix = (unit: ProductUnit) => {
-  switch (unit) {
-    case ProductUnit.Kg:
-      return ' kg';
-    case ProductUnit.Liter:
-      return ' l';
-    default:
-      return '';
-  }
-};
 interface AddToBasketProps extends Pick<Product, 'id'>, ProductInDistribution {}
 export const AddToBasket: FC<AddToBasketProps> = ({
   id,
@@ -27,14 +19,24 @@ export const AddToBasket: FC<AddToBasketProps> = ({
   perUnit,
 }) => {
   const { t } = useTranslation();
+  const { addProduct } = useBasket();
   const numberFormat = useNumberFormat();
   const [count, setCount] = useState(1);
+  const [added, setAdded] = useState(false);
   const add = useCallback(() => {
-    console.log(`add ${count} products #${id}`);
-  }, [count, id]);
+    addProduct(id, count);
+    setAdded(true);
+    setCount(1);
+  }, [addProduct, count, id]);
+  useEffect(() => {
+    const timeout = setTimeout(() => setAdded(false), 2000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [added]);
   const total = count * price;
   const suffix = getSuffix(unit);
-  console.log('unitLabel', unitLabel);
+
   return (
     <Box flex="1" justifyContent="end">
       <Box flexDirection="row" justifyContent="space-between" mb={2}>
@@ -76,7 +78,13 @@ export const AddToBasket: FC<AddToBasketProps> = ({
       </Box>
       <Button type="button" onClick={add}>
         <Text justifyContent="center" flex="1">
-          {t('product.addToBasket.label')}
+          {!added && t('product.addToBasket.label')}
+          {added && (
+            <>
+              {t('product.addToBasket.label', { context: 'added' })}
+              <Box className="pi pi-thumbs-up" ml={2} />
+            </>
+          )}
         </Text>
       </Button>
     </Box>

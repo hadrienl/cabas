@@ -1,18 +1,22 @@
 import UserProvider from 'components/UserProvider';
 import HeaderProvider from 'components/Header/HeaderProvider';
+import BasketProvider from 'components/BasketProvider';
 
 import 'primereact/resources/themes/vela-green/theme.css';
+//import 'primereact/resources/themes/saga-green/theme.css';
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
 
-import '../styles/globals.css';
+import '../styles/globals.scss';
 
 function MyApp({ Component, pageProps }) {
   return (
     <UserProvider>
-      <HeaderProvider>
-        <Component {...pageProps} />
-      </HeaderProvider>
+      <BasketProvider>
+        <HeaderProvider>
+          <Component {...pageProps} />
+        </HeaderProvider>
+      </BasketProvider>
     </UserProvider>
   );
 }

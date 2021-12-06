@@ -1,5 +1,4 @@
-import { createContext, FC, useContext, useMemo, useState } from 'react';
-import { useTranslation } from 'lib/i18n';
+import { createContext, FC, useContext, useState } from 'react';
 
 export interface Link {
   label: string;
@@ -18,7 +17,6 @@ export const context = createContext<HeaderContext>({
 export const useHeader = () => useContext(context);
 
 export const HeaderProvider: FC = ({ children }) => {
-  const { t } = useTranslation();
   const [breadcrumbs, setBreadcrumbs] = useState<Link[] | null>(null);
 
   return (

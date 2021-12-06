@@ -1,4 +1,4 @@
-import { FC, MouseEvent, useEffect } from 'react';
+import { FC, MouseEvent, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import Box from 'components/Box';
@@ -8,40 +8,42 @@ import Main from 'components/Main';
 import { useUser } from 'components/UserProvider';
 import { useHeader, Link as ILink } from 'components/Header/HeaderProvider';
 import { useTranslation } from 'lib/i18n';
+import { getEmptyArray } from 'lib/empty';
 
 interface AccountLayoutProps {
   breadcrumbs?: ILink[];
 }
 
+const EMPTY_ARRAY = getEmptyArray<ILink>();
+
 export const AccountLayout: FC<AccountLayoutProps> = ({
   children,
-  breadcrumbs = [],
+  breadcrumbs = EMPTY_ARRAY,
 }) => {
   const { t } = useTranslation();
   const { user, signout } = useUser();
   const { push } = useRouter();
   const { setBreadcrumbs } = useHeader();
 
-  const signOut = async (e: MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    signout();
-    push('/');
-  };
+  const signOut = useCallback(
+    async (e: MouseEvent<HTMLAnchorElement>) => {
+      e.preventDefault();
+      signout();
+      push('/');
+    },
+    [push, signout]
+  );
 
   useEffect(() => {
     if (!user) return;
-    setBreadcrumbs([
-      {
-        label: t('account.title'),
-        url: '/account',
-      },
-      ...breadcrumbs,
-    ]);
+    setBreadcrumbs(breadcrumbs);
+  }, [breadcrumbs, setBreadcrumbs, t, user]);
 
+  useEffect(() => {
     return () => {
       setBreadcrumbs([]);
     };
-  }, [breadcrumbs, setBreadcrumbs, t, user]);
+  }, [setBreadcrumbs]);
 
   if (!user) return null;
 
@@ -55,6 +57,10 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
           minWidth="200px"
           maxWidth="300px"
         >
+          <Link href="/account/profile" flexDirection="row" alignItems="center">
+            <Box className="pi pi-user" mr={3} />
+            <Text py={3}>{t('account.profile.title')}</Text>
+          </Link>
           <Link
             href="/account/password"
             flexDirection="row"
@@ -62,6 +68,10 @@ export const AccountLayout: FC<AccountLayoutProps> = ({
           >
             <Box className="pi pi-lock" mr={3} />
             <Text py={3}>{t('account.password.title')}</Text>
+          </Link>
+          <Link href="/account/orders" flexDirection="row" alignItems="center">
+            <Box className="pi pi-shopping-bag" mr={3} />
+            <Text py={3}>{t('account.orders.title')}</Text>
           </Link>
           <Text
             onClick={signOut}
