@@ -1,5 +1,4 @@
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import Box from 'components/Box';
 import { useTranslation } from 'lib/i18n';

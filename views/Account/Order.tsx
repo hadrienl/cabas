@@ -9,6 +9,8 @@ import AccountLayout from './Layout';
 import Loading from 'components/Loading';
 import Text from 'components/Text';
 import { Link } from 'components/Header/HeaderProvider';
+import { Button } from 'primereact/button';
+import api from 'lib/api';
 
 export interface OrderProps {
   order: Order;
@@ -16,6 +18,13 @@ export interface OrderProps {
 
 export const OrderContent: FC<OrderProps> = ({ order }) => {
   const { t } = useTranslation();
+  const { push } = useRouter();
+
+  const pay = useCallback(async () => {
+    if (!order.id) return;
+    const { url } = await api.getCheckoutUrl(order.id)
+    push(url);
+  }, [order.id, push]);
 
   return (
     <Box>
@@ -31,6 +40,7 @@ export const OrderContent: FC<OrderProps> = ({ order }) => {
       {order.status === 'submitted' && (
         <Box>
           <Text>{t('account.order.payment')}</Text>
+          <Button onClick={pay}>Payer</Button>
         </Box>
       )}
       <table>
