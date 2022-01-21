@@ -1,17 +1,24 @@
-import Stripe from 'stripe'
+import Stripe from 'stripe';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createUserClient } from 'lib/supabase';
 
 const stripe = new Stripe(process.env.STRIPE_KEY || '', {
   apiVersion: '2020-08-27',
-  typescript: true
-})
+  typescript: true,
+});
 
-const pay = async ({ query: { orderId, from = '' }, headers: { authorization = '' } }: NextApiRequest, res: NextApiResponse) => {
+const pay = async (
+  {
+    query: { orderId, from = '' },
+    headers: { authorization = '' },
+    ...req
+  }: NextApiRequest,
+  res: NextApiResponse
+) => {
   if (!authorization) return res.status(401).send('token is mandatory');
-  const supabaseClient = createUserClient(`${authorization}`)
+  const supabaseClient = createUserClient(`${authorization}`);
 
-  const { data: products, error } = await supabaseClient
+  const { data: products } = await supabaseClient
     .from('orders')
     .select(`*`)
     .eq('id', orderId);
@@ -28,21 +35,24 @@ const pay = async ({ query: { orderId, from = '' }, headers: { authorization = '
         unit_amount: unit_price * 100,
       },
       quantity,
-    }
-  })
+    };
+  });
   const session = await stripe.checkout.sessions.create({
+    metadata: {
+      orderId: `${orderId}`,
+    },
     line_items: lineItems,
     mode: 'payment',
     locale: 'fr',
-    success_url: `http://localhost:3000/api/pay_success/${orderId}?from=${from}`,
+    success_url: `${process.env.NEXT_PUBLIC_API_HOST}/api/pay/${orderId}/success?from=${from}&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${from}`,
-  })
+  });
 
   if (session.url) {
     res.send({ url: session.url });
-    return
+    return;
   }
-  res.status(500).send('Unknown error')
+  res.status(500).send('Unknown error');
 };
 
 export default pay;

@@ -22,7 +22,7 @@ export const OrderContent: FC<OrderProps> = ({ order }) => {
 
   const pay = useCallback(async () => {
     if (!order.id) return;
-    const { url } = await api.getCheckoutUrl(order.id)
+    const { url } = await api.getCheckoutUrl(order.id);
     push(url);
   }, [order.id, push]);
 
@@ -34,13 +34,11 @@ export const OrderContent: FC<OrderProps> = ({ order }) => {
           date: order.updatedAt && new Date(order.updatedAt),
         })}
       </Text>
-      <Text>
-        Status: {t('account.order.status', { context: order.status })}
-      </Text>
+      <Text>{t('account.order.status', { context: order.status })}</Text>
       {order.status === 'submitted' && (
         <Box>
           <Text>{t('account.order.payment')}</Text>
-          <Button onClick={pay}>Payer</Button>
+          <Button onClick={pay}>{t('account.order.pay_cb')}</Button>
         </Box>
       )}
       <table>
@@ -103,7 +101,7 @@ export const OrderView: FC<OrderProps> = (props) => {
       )
       .eq('id', +orderId)
       .single();
-    console.log('order', order);
+
     if (!order) {
       setLoading(false);
       return;
