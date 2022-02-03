@@ -75,7 +75,9 @@ CREATE TABLE indent (
   fk_customer uuid NOT NULL REFERENCES customer(id),
   fk_distribution int8 NOT NULL REFERENCES distribution(id),
   status indent_status,
-  total float
+  total float,
+  paid float,
+  payment_id string
 );
 
 ALTER TABLE indent ENABLE ROW LEVEL SECURITY;

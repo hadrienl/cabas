@@ -82,7 +82,8 @@
       "status_paid": "Payée",
       "status_valid": "Validée",
       "status_shipped": "Livrée",
-      "payment": "Votre commande est en attente de paiement."
+      "payment": "Votre commande est en attente de paiement.",
+      "pay_cb": "Payer par Carte bancaire"
     }
   },
   "basket": {

@@ -33,6 +33,10 @@ export class Api {
 
     return await res.json();
   }
+
+  getCheckoutUrl(orderId: number) {
+    return this.fetch(`/api/pay/${orderId}?from=${window.location}`)
+  }
 }
 
 export default new Api();
