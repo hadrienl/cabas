@@ -1,6 +1,7 @@
 import Stripe from 'stripe';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { createUserClient } from 'lib/supabase';
+import i18n from 'lib/i18n';
 
 const stripe = new Stripe(process.env.STRIPE_KEY || '', {
   apiVersion: '2020-08-27',
@@ -11,7 +12,6 @@ const pay = async (
   {
     query: { orderId, from = '' },
     headers: { authorization = '' },
-    ...req
   }: NextApiRequest,
   res: NextApiResponse
 ) => {
@@ -37,6 +37,23 @@ const pay = async (
       quantity,
     };
   });
+  const total = lineItems.reduce(
+    (prev, { price_data: { unit_amount }, quantity }) =>
+      prev + unit_amount * quantity,
+    0
+  );
+
+  lineItems.push({
+    price_data: {
+      currency: 'eur',
+      product_data: {
+        name: i18n.t('account.order.charges'),
+      },
+      unit_amount: Math.ceil(total * 0.014) + 25,
+    },
+    quantity: 1,
+  });
+
   const session = await stripe.checkout.sessions.create({
     metadata: {
       orderId: `${orderId}`,
