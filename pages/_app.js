@@ -10,11 +10,13 @@ import 'primeicons/primeicons.css';
 import '../styles/globals.scss';
 
 function MyApp({ Component, pageProps }) {
+  const getLayout = Component.getLayout ?? ((page) => page);
+
   return (
     <UserProvider>
       <BasketProvider>
         <HeaderProvider>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
         </HeaderProvider>
       </BasketProvider>
     </UserProvider>

@@ -14,9 +14,9 @@ export const Link: FC<LinkProps> = ({
   children,
   ...props
 }) => {
-  const { push, pathname } = useRouter();
+  const { push, asPath } = useRouter();
 
-  const isActive = pathname === href;
+  const isActive = asPath === href;
 
   const navigate = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {

@@ -84,7 +84,7 @@
       "status_shipped": "$t(order.status_shipped)",
       "payment": "Votre commande est en attente de paiement.",
       "pay_cb": "Payer par Carte bancaire",
-      "charges": "Frais de traitement de la commande"
+      "charges": "Frais d'encaissement CB (1,4% + 0,25 €)"
     }
   },
   "order": {
@@ -146,7 +146,18 @@
   },
   "admin": {
     "title": "Accès Administrateur",
-    "orders": {
+    "distributions": {
+      "title": "Distribution du {{-date}}",
+      "products": "Produits",
+      "orders": "Commandes"
+    },
+    "products": {
+      "add_producer": "Choisir un producteur",
+      "add_product": "Choisir un produit",
+      "add_price": "Choisir un prix"
+    },
+
+    "__orders": {
       "title": "Gestion des commandes",
       "currentDistribution": "Distribution en cours du {{startAt, formatDate, dd MMMM yyyy}} au {{closeAt, formatDate, dd MMMM yyyy}}",
       "status_submitted": "1 - $t(order.status_submitted)",

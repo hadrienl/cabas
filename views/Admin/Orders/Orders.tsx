@@ -6,6 +6,7 @@ import Layout from '../Layout';
 import { Distribution } from 'types/Entities';
 import supabase from 'lib/supabase';
 import OrdersTable from './OrdersTable';
+import { DistributionsProvider } from 'components/DistributionsProvider';
 
 export const OrdersView: FC = () => {
   const { t } = useTranslation();
@@ -36,18 +37,20 @@ export const OrdersView: FC = () => {
   );
 
   return (
-    <Layout>
-      <Text as="h1">{t('admin.orders.title')}</Text>
-      {currentDistribution && (
-        <Text as="h2">
-          {t('admin.orders.currentDistribution', {
-            startAt: currentDistribution.startAt,
-            closeAt: currentDistribution.closeAt,
-          })}
-        </Text>
-      )}
-      <OrdersTable />
-    </Layout>
+    <DistributionsProvider>
+      <Layout>
+        <Text as="h1">{t('admin.orders.title')}</Text>
+        {currentDistribution && (
+          <Text as="h2">
+            {t('admin.orders.currentDistribution', {
+              startAt: currentDistribution.startAt,
+              closeAt: currentDistribution.closeAt,
+            })}
+          </Text>
+        )}
+        <OrdersTable />
+      </Layout>
+    </DistributionsProvider>
   );
 };
 
