@@ -3,7 +3,7 @@ import supabase from 'lib/supabase';
 import useNumberFormat from 'lib/useNumberFormat';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Product } from 'types/Entities';
 import { getLayout } from '../Layout';
 import { useDistribution } from '../useDistribution';
@@ -94,8 +94,9 @@ export const Products = () => {
     return [
       ...data.flatMap(({ producerId, productId, price, ...rest }, index) => {
         const next = [{ producerId, productId, price, ...rest }];
-        if (index > 0 && data[index - 1].producerId !== producerId) {
+        if (data[index + 1] && data[index + 1].producerId !== producerId) {
           next.push({
+            ...next[0],
             producerId: -1,
             producerName: ADD,
             productId: -1,
@@ -107,12 +108,9 @@ export const Products = () => {
             pid: -1,
           });
         }
-        if (index > 0 && data[index - 1].productId !== productId) {
+        if (!data[index + 1] || data[index + 1].productId !== productId) {
           next.push({
-            producerId: data[index - 1].producerId,
-            producerName: data[index - 1].producerName,
-            productId: data[index - 1].productId,
-            productName: data[index - 1].producerName,
+            ...next[0],
             price: ADD,
             unit: '',
             unitLabel: '',
@@ -139,6 +137,37 @@ export const Products = () => {
       },
     ];
   }, [numberFormat, products]);
+
+  const setProducer = (id: number) => {
+    console.log('set prorucer', id);
+  };
+  const setProduct = useCallback(async (id: number) => {
+    console.log('set product', id);
+  }, []);
+
+  const setPrice = useCallback(
+    async ({
+      id,
+      ...data
+    }: {
+      id: number;
+      price: number;
+      unit: number;
+      unitLabel: string;
+      perUnit: string;
+    }) => {
+      if (!id || !distribution) return;
+      const { data: d } = await supabase
+        .from('product_in_distribution')
+        .insert({
+          fk_distribution: distribution.id,
+          fk_product: id,
+          ...data,
+        });
+      console.log(d);
+    },
+    []
+  );
 
   return (
     <CatalogProvider>
@@ -170,21 +199,35 @@ export const Products = () => {
             field="producer"
             header="Producteur"
             body={({ producerName }) => (
-              <Cell value={producerName} type="producer" />
+              <Cell
+                value={producerName}
+                type="producer"
+                onChange={setProducer}
+              />
             )}
           />
           <Column
             field="product"
             header="Product"
             body={({ producerId, productName }) => (
-              <Cell value={productName} id={producerId} type="product" />
+              <Cell
+                value={productName}
+                id={producerId}
+                type="product"
+                onChange={setProduct}
+              />
             )}
           />
           <Column
             field="price"
             header="Prix"
             body={({ price, productId }) => (
-              <Cell value={price} id={productId} type="price" />
+              <Cell
+                value={price}
+                id={productId}
+                type="price"
+                onChange={setPrice}
+              />
             )}
           />
           <Column field="unit" header="Unit" />

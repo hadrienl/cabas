@@ -1,3 +1,4 @@
+import Box from 'components/Box';
 import { useTranslation } from 'lib/i18n';
 import { Button } from 'primereact/button';
 import { OverlayPanel } from 'primereact/overlaypanel';
@@ -5,6 +6,7 @@ import { useCallback, useRef } from 'react';
 import PriceSelector from './PriceSelector';
 import ProducerSelector from './ProducerSelector';
 import ProductSelector from './ProductSelector';
+import { OverlayContent } from './types';
 
 export const ADD = 'add';
 
@@ -12,7 +14,7 @@ type CellType = 'producer' | 'product' | 'price';
 
 const getOverlayContent = (
   type: CellType
-): ((props: { id?: number }) => JSX.Element) => {
+): ((props: OverlayContent) => JSX.Element | null) => {
   switch (type) {
     case 'producer':
       return ProducerSelector;
@@ -22,13 +24,12 @@ const getOverlayContent = (
       return PriceSelector;
   }
 };
-interface CellProps {
+interface CellProps extends OverlayContent {
   value: string;
   type: CellType;
-  id?: number;
 }
 
-export const Cell = ({ value, type, id }: CellProps) => {
+export const Cell = ({ value, type, id, onChange }: CellProps) => {
   const { t } = useTranslation();
   const op = useRef<OverlayPanel>(null);
 
@@ -38,7 +39,13 @@ export const Cell = ({ value, type, id }: CellProps) => {
   }, []);
 
   const OverlayContent = getOverlayContent(type);
-
+  const setValue = useCallback(
+    (id: number) => {
+      onChange(id);
+      op.current?.hide();
+    },
+    [onChange]
+  );
   if (value === ADD) {
     return (
       <>
@@ -46,9 +53,9 @@ export const Cell = ({ value, type, id }: CellProps) => {
           {t('admin.products.add', { context: type })}
         </Button>
         <OverlayPanel ref={op}>
-          <div>
-            <OverlayContent id={id} />
-          </div>
+          <Box p={0} m="-1rem" height="400px" style={{ overflow: 'auto' }}>
+            <OverlayContent id={id} onChange={setValue} />
+          </Box>
         </OverlayPanel>
       </>
     );

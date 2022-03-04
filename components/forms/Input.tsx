@@ -19,7 +19,7 @@ const getComponentType = (
         },
       };
     default:
-      return { Component: InputText, props: {} };
+      return { Component: InputText, props: { type } };
   }
 };
 

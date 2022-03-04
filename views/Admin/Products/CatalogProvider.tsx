@@ -33,7 +33,6 @@ export const CatalogProvider: FC = ({ children }) => {
 
   const fetchProducts: CatalogContext['fetchProducts'] = useCallback(
     async (id) => {
-      console.log('id', id);
       const { data } = await supabase
         .from<Product & { fk_producer: number }>('product')
         .select('*')
