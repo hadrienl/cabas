@@ -2,7 +2,7 @@ import { FC, useCallback, useEffect, useState } from 'react';
 
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import Layout from '../Layout';
+import Layout from '../Layout/Layout';
 import { Distribution } from 'types/Entities';
 import supabase from 'lib/supabase';
 import OrdersTable from './OrdersTable';

@@ -17,10 +17,12 @@ export const Nav = () => {
     route,
     ...props
   } = useRouter();
-  console.log(route, id, props);
 
   return (
     <>
+      <Text>Catalogue</Text>
+      <Link href="/admin/catalog">Editer le catalogue</Link>
+      <Text>Distribution</Text>
       {distributions.map(({ id, startAt, shipAt, closeAt }) => (
         <Box key={id} mb="4">
           <Text py="2">
