@@ -7,11 +7,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Producer } from 'types/Entities';
 import { getLayout } from '../Layout';
 import Products from './Products';
-import TrashButton from 'components/TrashButton';
+import EditProducer from './EditProducer';
+import api from 'lib/api';
+import Box from 'components/Box';
 
 export const Catalog = () => {
   const [producers, setProducers] = useState<Producer[]>([]);
   const [displayProducts, setDisplayProducts] = useState<number | false>(false);
+  const [editProducer, setEditProducer] = useState<Partial<Producer>>();
 
   useEffect(() => {
     const fetch = async () => {
@@ -22,42 +25,24 @@ export const Catalog = () => {
     fetch();
   }, []);
 
-  const updateProducer = useCallback(
-    async ({ newRowData }: any) => {
-      const newProducers = producers.map((producer) =>
-        producer.id === newRowData.id ? newRowData : producer
-      );
-      setProducers(newProducers);
-
-      if (newRowData.id > -1) {
-        await supabase
-          .from('producer')
-          .update(newRowData)
-          .eq('id', newRowData.id);
-      } else {
-        const { id: nullId, ...toInsert } = newRowData;
-        const { data } = await supabase.from('producer').insert(toInsert);
-        if (!data) return;
-        setProducers((producers) => [
-          ...producers.filter(({ id }) => id !== nullId),
-          ...data,
-        ]);
-      }
-    },
-    [producers]
-  );
-
   const addProducer = useCallback(() => {
-    setProducers([
-      ...producers,
-      {
-        id: -1,
-        name: '',
-        description: '',
-        photo: '',
-      },
-    ]);
-  }, [producers]);
+    setEditProducer({});
+  }, []);
+  const saveProducer = useCallback(async (producer: Producer) => {
+    setEditProducer(undefined);
+    const saved = await api.saveProducer(producer);
+    if (!saved) return;
+    setProducers((producers) => {
+      const newProducers = [...producers];
+      const found = newProducers.findIndex(({ id }) => saved.id === id);
+      if (found > -1) {
+        newProducers[found] = saved;
+      } else {
+        newProducers.push(producer);
+      }
+      return newProducers;
+    });
+  }, []);
 
   const showProducts = useCallback(
     (id: number) => () => {
@@ -68,39 +53,32 @@ export const Catalog = () => {
 
   return (
     <>
-      <Button onClick={addProducer}>Ajouter</Button>
       <DataTable value={producers} editMode="cell">
-        <Column
-          field="name"
-          onCellEditComplete={updateProducer}
-          editor={({ value, editorCallback = () => null }) => (
-            <textarea
-              onChange={({ target: { value } }) => editorCallback(value)}
-              value={value}
-            />
-          )}
-        />
-        <Column
-          field="description"
-          onCellEditComplete={updateProducer}
-          editor={({ value, editorCallback = () => null }) => (
-            <textarea
-              onChange={({ target: { value } }) => editorCallback(value)}
-              value={value}
-            />
-          )}
-        />
+        <Column field="name" />
+        <Column field="description" />
         <Column
           field="photo"
           body={({ photo }) => photo && <img src={photo} alt="" width={50} />}
         />
         <Column
-          body={({ id }) =>
-            id > -1 && <Button onClick={showProducts(id)}>Produits</Button>
-          }
+          body={(producer) => (
+            <Box flexDirection="row" justifyContent="space-around">
+              {producer.id > -1 && (
+                <Button onClick={showProducts(producer.id)}>Produits</Button>
+              )}
+              <Button onClick={() => setEditProducer(producer)}>Editer</Button>
+            </Box>
+          )}
         />
       </DataTable>
       <Button onClick={addProducer}>Ajouter</Button>
+      <Sidebar
+        visible={!!editProducer}
+        onHide={() => setEditProducer(undefined)}
+        position="right"
+      >
+        <EditProducer producer={editProducer} onSubmit={saveProducer} />
+      </Sidebar>
       <Sidebar
         visible={!!displayProducts}
         onHide={() => setDisplayProducts(false)}

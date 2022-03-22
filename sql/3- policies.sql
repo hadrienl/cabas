@@ -46,3 +46,17 @@ CREATE POLICY "Admin Orders"
   ON indent
   FOR all
   USING (exists(select access ->> 'orders' from user_access where id = auth.uid()));
+
+-- Images
+DROP POLICY IF EXISTS 'Images' ON storage.objects;
+CREATE POLICY "Images" ON storage.objects
+  FOR SELECT USING (bucket_id = 'images');
+CREATE POLICY "Images" ON storage.objects
+  FOR INSERT
+  WITH CHECK (bucket_id = 'images' AND
+    (select true from user_access where (access->'catalog'->>'write')::boolean and id = auth.uid()));
+
+CREATE POLICY "Images" ON storage.objects
+  FOR UPDATE
+  USING (bucket_id = 'images' AND
+    (select true from user_access where (access->'catalog'->>'write')::boolean and id = auth.uid()));

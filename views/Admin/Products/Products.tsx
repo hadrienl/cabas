@@ -17,6 +17,7 @@ export const Products = () => {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState([]);
   const [products, setProducts] = useState<Product[]>([]);
+
   const numberFormat = useNumberFormat();
 
   useEffect(() => {
@@ -138,9 +139,7 @@ export const Products = () => {
     ];
   }, [numberFormat, products]);
 
-  const setProducer = (id: number) => {
-    console.log('set prorucer', id);
-  };
+  const setProducer = useCallback((id: number) => {}, []);
   const setProduct = useCallback(async (id: number) => {
     console.log('set product', id);
   }, []);
@@ -166,7 +165,7 @@ export const Products = () => {
         });
       console.log(d);
     },
-    []
+    [distribution]
   );
 
   return (
@@ -174,10 +173,10 @@ export const Products = () => {
       <Box>
         <DataTable
           value={data}
-          selection={selected}
-          onSelectionChange={(e) => setSelected(e.value)}
+          //selection={selected}
+          //onSelectionChange={(e) => setSelected(e.value)}
         >
-          <Column
+          {/*<Column
             header={() =>
               selected.length > 0 && (
                 <Box
@@ -193,8 +192,8 @@ export const Products = () => {
               )
             }
             headerStyle={{ position: 'relative' }}
-          />
-          <Column selectionMode="multiple" />
+          />*/}
+          {/*<Column selectionMode="multiple" />*/}
           <Column
             field="producer"
             header="Producteur"
