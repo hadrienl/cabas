@@ -110,3 +110,12 @@ create view orders as
     left join distribution on distribution.id = product_in_distribution.fk_distribution
     left join product on product.id = product_in_distribution.fk_product
     where status != 'pending';
+
+drop view if exists producers_catalog;
+create view producers_catalog as
+  select
+      producer.*,
+      count(product.fk_producer) as products_count
+    from producer
+    left join product on producer.id = product.fk_producer
+    group by producer.id;

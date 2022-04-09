@@ -1,5 +1,5 @@
 import { decode } from 'base64-arraybuffer';
-import { Producer } from 'types/Entities';
+import { Producer, Product } from 'types/Entities';
 import supabase from './supabase';
 import sha from 'sha1';
 
@@ -91,6 +91,43 @@ export class Api {
       return null;
     }
     return newProducerResponse.data[0];
+  }
+
+  async saveProduct({
+    photo,
+    id,
+    ...product
+  }: Product & { fk_producer: number }) {
+    let productId = id;
+    if (!productId) {
+      const productResponse = await supabase.from('product').upsert(product);
+      if (productResponse.error) {
+        throw productResponse.error;
+      }
+      if (!productResponse.data || !productResponse.data[0]) {
+        return null;
+      }
+      productId = productResponse.data[0].id;
+    }
+
+    const isBase64 = !photo || !`${photo}`.match(/^http/);
+    const photoUrl = isBase64 ? await this.uploadPhoto(photo) : photo;
+
+    const newProductResponse = await supabase
+      .from('product')
+      .update({
+        ...product,
+        photo: photoUrl,
+      })
+      .eq('id', productId);
+
+    if (newProductResponse.error) {
+      throw newProductResponse.error;
+    }
+    if (!newProductResponse.data || !newProductResponse.data[0]) {
+      return null;
+    }
+    return newProductResponse.data[0];
   }
 }
 

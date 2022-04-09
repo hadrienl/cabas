@@ -11,14 +11,19 @@ import EditProducer from './EditProducer';
 import api from 'lib/api';
 import Box from 'components/Box';
 
+type ProducersWithProductsCount = Producer & { products_count: number };
+
 export const Catalog = () => {
-  const [producers, setProducers] = useState<Producer[]>([]);
+  const [producers, setProducers] = useState<ProducersWithProductsCount[]>([]);
   const [displayProducts, setDisplayProducts] = useState<number | false>(false);
   const [editProducer, setEditProducer] = useState<Partial<Producer>>();
 
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await supabase.from('producer').select('*').limit(100);
+      const { data } = await supabase
+        .from<ProducersWithProductsCount>('producers_catalog')
+        .select(`*`)
+        .limit(100);
       if (!data) return;
       setProducers(data);
     };
@@ -28,6 +33,7 @@ export const Catalog = () => {
   const addProducer = useCallback(() => {
     setEditProducer({});
   }, []);
+
   const saveProducer = useCallback(async (producer: Producer) => {
     setEditProducer(undefined);
     const saved = await api.saveProducer(producer);
@@ -64,7 +70,9 @@ export const Catalog = () => {
           body={(producer) => (
             <Box flexDirection="row" justifyContent="space-around">
               {producer.id > -1 && (
-                <Button onClick={showProducts(producer.id)}>Produits</Button>
+                <Button onClick={showProducts(producer.id)}>
+                  {producer.products_count || 0} Produits
+                </Button>
               )}
               <Button onClick={() => setEditProducer(producer)}>Editer</Button>
             </Box>

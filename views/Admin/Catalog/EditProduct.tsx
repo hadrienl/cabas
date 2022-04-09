@@ -6,16 +6,17 @@ import { Form } from 'react-final-form';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Button } from 'primereact/button';
-import { Producer } from 'types/Entities';
+import { Producer, Product } from 'types/Entities';
 import TextArea from 'components/forms/TextArea';
 
-interface EditProducerProps {
-  producer?: Partial<Producer>;
-  onSubmit: (values: Producer) => void;
+interface EditProductProps {
+  product?: Partial<Product>;
+  onSubmit: (values: Product) => void;
 }
 
-export const EditProducer = ({ producer, onSubmit }: EditProducerProps) => {
-  const [photo, setPhoto] = useState(producer ? producer.photo : '');
+export const EditProduct = ({ product, onSubmit }: EditProductProps) => {
+  console.log(product);
+  const [photo, setPhoto] = useState(product ? product.photo : '');
   const readFile = ({ target }: ChangeEvent<HTMLInputElement>) => {
     if (!target.files) return;
     const file = target.files[0];
@@ -34,10 +35,10 @@ export const EditProducer = ({ producer, onSubmit }: EditProducerProps) => {
     [onSubmit, photo]
   );
   return (
-    <Form onSubmit={save} initialValues={producer}>
+    <Form onSubmit={save} initialValues={product}>
       {({ handleSubmit }) => (
         <Box as="form" onSubmit={handleSubmit}>
-          <Title>Ajouter un producteur</Title>
+          <Title>Ajouter un produit</Title>
           <Field name="name" label="Nom">
             <Input name="name" />
           </Field>
@@ -62,4 +63,4 @@ export const EditProducer = ({ producer, onSubmit }: EditProducerProps) => {
   );
 };
 
-export default EditProducer;
+export default EditProduct;

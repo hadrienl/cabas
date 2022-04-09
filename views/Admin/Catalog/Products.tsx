@@ -1,10 +1,14 @@
+import Box from 'components/Box';
 import TrashButton from 'components/TrashButton';
+import api from 'lib/api';
 import supabase from 'lib/supabase';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
+import { Sidebar } from 'primereact/sidebar';
 import { useCallback, useEffect, useState } from 'react';
-import { ProductBase } from 'types/Entities';
+import { Product, ProductBase } from 'types/Entities';
+import EditProduct from './EditProduct';
 
 interface ProductsProps {
   id: number;
@@ -12,6 +16,7 @@ interface ProductsProps {
 
 export const Products = ({ id }: ProductsProps) => {
   const [products, setProducts] = useState<ProductBase[]>([]);
+  const [editProduct, setEditProduct] = useState<Partial<Product>>();
 
   useEffect(() => {
     const fetch = async () => {
@@ -26,75 +31,47 @@ export const Products = ({ id }: ProductsProps) => {
     fetch();
   }, [id]);
 
-  const addProduct = useCallback(() => {
-    setProducts([
-      ...products,
-      {
-        id: -1,
-        name: '',
-        description: '',
-        photo: '',
-      },
-    ]);
-  }, [products]);
-  const updateProduct = useCallback(
-    async ({ newRowData }: any) => {
-      const newProducts = products.map((product) =>
-        product.id === newRowData.id ? newRowData : product
-      );
-      setProducts(newProducts);
-
-      if (newRowData.id > -1) {
-        await supabase
-          .from('product')
-          .update(newRowData)
-          .eq('id', newRowData.id);
+  const saveProduct = useCallback(async (product: Product) => {
+    setEditProduct(undefined);
+    const saved = await api.saveProduct({ ...product, fk_producer: id });
+    if (!saved) return;
+    setProducts((products) => {
+      const newProducts = [...products];
+      const found = newProducts.findIndex(({ id }) => saved.id === id);
+      if (found > -1) {
+        newProducts[found] = saved;
       } else {
-        const { id: nullId, ...toInsert } = newRowData;
-        const { data } = await supabase.from('product').insert({
-          ...toInsert,
-          fk_producer: id,
-        });
-        if (!data) return;
-        setProducts((products) => [
-          ...products.filter(({ id }) => id !== nullId),
-          ...data,
-        ]);
+        newProducts.push(product);
       }
-    },
-    [id, products]
-  );
+      return newProducts;
+    });
+  }, []);
 
   return (
     <>
-      <Button onClick={addProduct}>Ajouter</Button>
       <DataTable value={products} editMode="cell">
-        <Column
-          field="name"
-          onCellEditComplete={updateProduct}
-          editor={({ value, editorCallback = () => null }) => (
-            <textarea
-              onChange={({ target: { value } }) => editorCallback(value)}
-              value={value}
-            />
-          )}
-        />
-        <Column
-          field="description"
-          onCellEditComplete={updateProduct}
-          editor={({ value, editorCallback = () => null }) => (
-            <textarea
-              onChange={({ target: { value } }) => editorCallback(value)}
-              value={value}
-            />
-          )}
-        />
+        <Column field="name" />
+        <Column field="description" />
         <Column
           field="photo"
           body={({ photo }) => photo && <img src={photo} alt="" width={50} />}
         />
+        <Column
+          body={(product) => (
+            <Box flexDirection="row" justifyContent="space-around">
+              <Button onClick={() => setEditProduct(product)}>Editer</Button>
+            </Box>
+          )}
+        />
       </DataTable>
-      <Button onClick={addProduct}>Ajouter</Button>
+      <Button onClick={() => setEditProduct({})}>Ajouter</Button>
+      <Sidebar
+        visible={!!editProduct}
+        onHide={() => setEditProduct(undefined)}
+        position="right"
+      >
+        <EditProduct product={editProduct} onSubmit={saveProduct} />
+      </Sidebar>
     </>
   );
 };
