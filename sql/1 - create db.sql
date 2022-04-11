@@ -84,7 +84,7 @@ CREATE TABLE indent (
   status indent_status,
   total float,
   paid float,
-  payment_id string
+  payment_id text
 );
 
 ALTER TABLE indent ENABLE ROW LEVEL SECURITY;

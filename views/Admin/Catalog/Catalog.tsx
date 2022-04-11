@@ -44,7 +44,7 @@ export const Catalog = () => {
       if (found > -1) {
         newProducers[found] = saved;
       } else {
-        newProducers.push(producer);
+        newProducers.push({ ...producer, products_count: 0 });
       }
       return newProducers;
     });
