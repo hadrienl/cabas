@@ -1,5 +1,5 @@
 import supabase from 'lib/supabase';
-import { FC, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { Distribution } from 'types/Entities';
 import { context } from './context';
 
@@ -28,8 +28,38 @@ export const DistributionsProvider: FC = ({ children }) => {
     fetch();
   }, []);
 
+  const save = useCallback(async (distribution: Distribution) => {
+    const { data, error } = await supabase.from('distribution').upsert({
+      id: distribution.id,
+      start_at: distribution.startAt,
+      close_at: distribution.closeAt,
+      ship_at: distribution.shipAt,
+    });
+    if (error) {
+      throw error;
+    }
+    if (!data) {
+      return null;
+    }
+    const newDistribution: Distribution = {
+      id: data[0].id,
+      startAt: data[0].start_at,
+      closeAt: data[0].close_at,
+      shipAt: data[0].ship_at,
+    };
+
+    setDistributions((distributions) => {
+      const newDistributions = [...distributions, newDistribution];
+      newDistributions.sort(
+        (a, b) => +new Date(b.startAt) - +new Date(a.startAt)
+      );
+      return newDistributions;
+    });
+    return data[0];
+  }, []);
+
   return (
-    <context.Provider value={{ distributions, loading }}>
+    <context.Provider value={{ distributions, loading, save }}>
       {children}
     </context.Provider>
   );

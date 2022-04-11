@@ -1,14 +1,14 @@
 import Box, { BoxProps } from 'components/Box';
 import Text from 'components/Text';
 import { useTranslation } from 'lib/i18n';
-import { FC, ReactElement, useEffect, useMemo, useState } from 'react';
+import { FC, ReactElement, ReactNode, useEffect, useState } from 'react';
 import { FieldRenderProps, useField } from 'react-final-form';
 
 interface FieldProps extends BoxProps {
   name: string;
   label?: string;
   children:
-    | ReactElement
+    | ReactNode
     | ((v: {
         field: FieldRenderProps<any, HTMLElement, any>;
         pristine: boolean;

@@ -2,10 +2,7 @@ import { Calendar } from 'primereact/calendar';
 import Box from 'components/Box';
 import { Button } from 'primereact/button';
 import Field from 'components/forms/Field';
-import Input from 'components/forms/Input';
-import TextArea from 'components/forms/TextArea';
 import Title from 'components/forms/Title';
-import { useCallback } from 'react';
 import { Form } from 'react-final-form';
 import { Distribution } from 'types/Entities';
 
@@ -22,7 +19,7 @@ export const EditDistribution = ({
     <Form onSubmit={onSubmit} initialValues={distribution}>
       {({ handleSubmit, values }) => (
         <Box as="form" onSubmit={handleSubmit}>
-          <Title>Ajouter un produit</Title>
+          <Title>Ajouter une distribution</Title>
           <Field name="startAt" label="Démarre le">
             {({ field }) => (
               <Calendar
@@ -49,7 +46,7 @@ export const EditDistribution = ({
               />
             )}
           </Field>
-          <Button type="submit">Send</Button>
+          <Button type="submit">Enregistrer</Button>
         </Box>
       )}
     </Form>

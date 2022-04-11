@@ -46,6 +46,11 @@ CREATE POLICY "Admin Orders"
   ON indent
   FOR all
   USING (exists(select access ->> 'orders' from user_access where id = auth.uid()));
+DROP POLICY IF EXISTS "Admin Distributions" ON indent;
+CREATE POLICY "Admin Distributions"
+  ON distribution
+  FOR all
+  USING (exists(select access ->> 'orders' from user_access where id = auth.uid()));
 
 -- Images
 DROP POLICY IF EXISTS "Images read" ON storage.objects;

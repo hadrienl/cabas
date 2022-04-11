@@ -3,10 +3,9 @@ import Field from 'components/forms/Field';
 import Input from 'components/forms/Input';
 import Title from 'components/forms/Title';
 import { Form } from 'react-final-form';
-import { InputTextarea } from 'primereact/inputtextarea';
 import { ChangeEvent, useCallback, useState } from 'react';
 import { Button } from 'primereact/button';
-import { Producer, Product } from 'types/Entities';
+import { Product } from 'types/Entities';
 import TextArea from 'components/forms/TextArea';
 
 interface EditProductProps {

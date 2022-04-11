@@ -3,6 +3,7 @@ import Button from 'components/Button';
 import { useDistributions } from 'components/DistributionsProvider/context';
 import Link from 'components/Link';
 import Text from 'components/Text';
+import TrashButton from 'components/TrashButton';
 import { useUser } from 'components/UserProvider';
 import { useTranslation } from 'lib/i18n';
 import useDateFormat from 'lib/useDateFormat';
@@ -19,16 +20,20 @@ export const Nav = () => {
   > | null>(null);
   const dateFormat = useDateFormat();
   const { user, fetchAccess, access } = useUser();
-  const { distributions } = useDistributions();
+  const { distributions, save } = useDistributions();
   const {
     query: { id },
     route,
     ...props
   } = useRouter();
 
-  const saveDistribution = useCallback((distribution: Distribution) => {
-    console.log('save', distribution);
-  }, []);
+  const saveDistribution = useCallback(
+    (distribution: Distribution) => {
+      save(distribution);
+      setEditDistribution(null);
+    },
+    [save]
+  );
 
   return (
     <>
@@ -40,12 +45,17 @@ export const Nav = () => {
       </Button>
       {distributions.map((distribution) => (
         <Box key={distribution.id} mb="4">
-          <Button py="2" onClick={() => setEditDistribution(distribution)}>
+          <Text py="2">
             <Box className="pi pi-shopping-cart" mr={3} />
             {t('admin.distributions.title', {
               date: dateFormat(distribution.startAt),
             })}
-          </Button>
+            <Button
+              className="pi pi-pencil"
+              ml={2}
+              onClick={() => setEditDistribution(distribution)}
+            />
+          </Text>
           <Box ml="4">
             <Link
               href={`/admin/distribution/${distribution.id}/products`}
