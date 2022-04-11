@@ -1,4 +1,5 @@
 import Box from 'components/Box';
+import Button from 'components/Button';
 import { useDistributions } from 'components/DistributionsProvider/context';
 import Link from 'components/Link';
 import Text from 'components/Text';
@@ -6,9 +7,16 @@ import { useUser } from 'components/UserProvider';
 import { useTranslation } from 'lib/i18n';
 import useDateFormat from 'lib/useDateFormat';
 import { useRouter } from 'next/router';
+import { Sidebar } from 'primereact/sidebar';
+import { useCallback, useState } from 'react';
+import { Distribution } from 'types/Entities';
+import EditDistribution from '../EditDistribution';
 
 export const Nav = () => {
   const { t } = useTranslation();
+  const [editDistribution, setEditDistribution] = useState<Partial<
+    Distribution
+  > | null>(null);
   const dateFormat = useDateFormat();
   const { user, fetchAccess, access } = useUser();
   const { distributions } = useDistributions();
@@ -18,22 +26,29 @@ export const Nav = () => {
     ...props
   } = useRouter();
 
+  const saveDistribution = useCallback((distribution: Distribution) => {
+    console.log('save', distribution);
+  }, []);
+
   return (
     <>
       <Text>Catalogue</Text>
       <Link href="/admin/catalog">Editer le catalogue</Link>
       <Text>Distribution</Text>
-      {distributions.map(({ id, startAt, shipAt, closeAt }) => (
-        <Box key={id} mb="4">
-          <Text py="2">
+      <Button onClick={() => setEditDistribution({})}>
+        Créer une distribution
+      </Button>
+      {distributions.map((distribution) => (
+        <Box key={distribution.id} mb="4">
+          <Button py="2" onClick={() => setEditDistribution(distribution)}>
             <Box className="pi pi-shopping-cart" mr={3} />
             {t('admin.distributions.title', {
-              date: dateFormat(startAt),
+              date: dateFormat(distribution.startAt),
             })}
-          </Text>
+          </Button>
           <Box ml="4">
             <Link
-              href={`/admin/distribution/${id}/products`}
+              href={`/admin/distribution/${distribution.id}/products`}
               flexDirection="row"
               alignItems="center"
             >
@@ -44,7 +59,7 @@ export const Nav = () => {
           {access.orders && (
             <Box ml="4">
               <Link
-                href={`/admin/distribution/${id}/orders`}
+                href={`/admin/distribution/${distribution.id}/orders`}
                 flexDirection="row"
                 alignItems="center"
               >
@@ -55,6 +70,16 @@ export const Nav = () => {
           )}
         </Box>
       ))}
+      <Sidebar
+        visible={!!editDistribution}
+        onHide={() => setEditDistribution(null)}
+        position="right"
+      >
+        <EditDistribution
+          distribution={editDistribution || {}}
+          onSubmit={saveDistribution}
+        />
+      </Sidebar>
     </>
   );
 };

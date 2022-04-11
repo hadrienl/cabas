@@ -15,7 +15,6 @@ interface EditProductProps {
 }
 
 export const EditProduct = ({ product, onSubmit }: EditProductProps) => {
-  console.log(product);
   const [photo, setPhoto] = useState(product ? product.photo : '');
   const readFile = ({ target }: ChangeEvent<HTMLInputElement>) => {
     if (!target.files) return;
